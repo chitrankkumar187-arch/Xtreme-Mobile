@@ -21,8 +21,8 @@ constexpr size_t MAX_SERVERS = sizeof(g_szServerNames)
 #define IP1 "5.199.138.96"
 #define IP2 "5.199.138.96"
 const CServerInstance::CServerInstanceEncrypted g_sEncryptedAddresses[MAX_SERVERS] = {
-        CServerInstance::create((IP1), 1, 9, 40033, false),
-        CServerInstance::create((IP2), 1, 9, 40033, false)
+        CServerInstance::create((IP1), 1, 12, 40033, false),
+        CServerInstance::create((IP2), 1, 12, 40033, false)
 };
 
 int CServerInstance::iServer = -1;
