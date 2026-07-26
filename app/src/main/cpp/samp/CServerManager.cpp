@@ -18,11 +18,11 @@ const char* g_szServerNames[] = {
 constexpr size_t MAX_SERVERS = sizeof(g_szServerNames)
         / sizeof(g_szServerNames[0]);
 
-#define IP1 "127.0.0.1" // len 9
-#define IP2 "127.0.0.1" // len 9
+#define IP1 "5.199.138.96"
+#define IP2 "5.199.138.96"
 const CServerInstance::CServerInstanceEncrypted g_sEncryptedAddresses[MAX_SERVERS] = {
-        CServerInstance::create((IP1), 1, 9, 7777, false),
-        CServerInstance::create((IP2), 1, 9, 7777, false)
+        CServerInstance::create((IP1), 1, 11, 40033, false),
+        CServerInstance::create((IP2), 1, 11, 40033, false)
 };
 
 int CServerInstance::iServer = -1;
@@ -33,8 +33,8 @@ void CServerInstance::initConnection(int id) {
 
     if(CServerInstance::iServer == -1) {
         pNetGame = new CNetGame(
-                ("127.0.0.1"),
-                7777,
+                ("5.199.138.96"),
+                40033,
                 pSettings->Get().szNickName,
                 pSettings->Get().szPassword);
     } else {
