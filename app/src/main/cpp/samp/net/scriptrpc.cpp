@@ -203,7 +203,7 @@ int iTotalObjects = 0;
 
 void ScrCreateObject(RPCParameters* rpcParams)
 {
-	/*
+	
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
 	int iBitLength = rpcParams->numberOfBitsOfData;
 
@@ -334,10 +334,10 @@ void ScrCreateObject(RPCParameters* rpcParams)
 
 
 	iTotalObjects++;
-	*/
-	//LOGI("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
-	//MyLog2("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
-	//MyLog2("CreateObject: id: %d model: %d x: %f y: %f z: %f", iTotalObjects, iModel, vecPos.x, vecPos.y, vecPos.z);
+	
+	LOGI("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
+	MyLog2("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
+	MyLog2("CreateObject: id: %d model: %d x: %f y: %f z: %f", iTotalObjects, iModel, vecPos.x, vecPos.y, vecPos.z);
 }
 
 void ScrDestroyObject(RPCParameters *rpcParams)
@@ -358,7 +358,7 @@ void ScrDestroyObject(RPCParameters *rpcParams)
 
 void ScrSetObjectMaterial(RPCParameters* rpcParams)
 {
-	/*
+	
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
 	int iBitLength = rpcParams->numberOfBitsOfData;
 
@@ -686,7 +686,7 @@ void ScrSetPlayerInterior(RPCParameters* rpcParams)
 extern UI *pUI;
 void ScrShowTextDraw(RPCParameters* rpcParams)
 {
-    /*
+    
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
 	int iBitLength = rpcParams->numberOfBitsOfData;
 
@@ -712,7 +712,7 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
 	szText[wTextLength] = 0;
 
 	pTextDrawPool->New(wTextDrawID, &textDrawTransmit, szText);
-     */
+     
 }
 // 0.3.7
 void ScrHideTextDraw(RPCParameters* rpcParams)
