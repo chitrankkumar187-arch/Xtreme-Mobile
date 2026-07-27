@@ -335,9 +335,9 @@ void ScrCreateObject(RPCParameters* rpcParams)
 
 	iTotalObjects++;
 	
-	LOGI("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
-	MyLog2("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
-	MyLog2("CreateObject: id: %d model: %d x: %f y: %f z: %f", iTotalObjects, iModel, vecPos.x, vecPos.y, vecPos.z);
+	//LOGI("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
+	//MyLog2("CreateObject: model %d; Total objects: %d", iModel, iTotalObjects);
+	//MyLog2("CreateObject: id: %d model: %d x: %f y: %f z: %f", iTotalObjects, iModel, vecPos.x, vecPos.y, vecPos.z);
 }
 
 void ScrDestroyObject(RPCParameters *rpcParams)
@@ -433,7 +433,7 @@ void ScrSetObjectMaterial(RPCParameters* rpcParams)
 			}
 		}
 	}
-	*/
+	
 }
 
 
