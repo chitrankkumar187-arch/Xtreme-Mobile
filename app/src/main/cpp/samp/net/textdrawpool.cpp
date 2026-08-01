@@ -43,6 +43,32 @@ void CTextDrawPool::New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTrans
     m_pTextDraw[wTextDrawID] = pTextDraw;
     m_bSlotState[wTextDrawID] = true;
 }
+
+void CTextDrawPool::Delete(uint16_t wTextDrawID)
+{
+    if (wTextDrawID >= MAX_TEXT_DRAWS) return;
+
+    if (m_pTextDraw[wTextDrawID]) {
+        delete m_pTextDraw[wTextDrawID];
+        m_pTextDraw[wTextDrawID] = nullptr;
+        m_bSlotState[wTextDrawID] = false;
+    }
+}
+
+void CTextDrawPool::New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText)
+{
+    if (wTextDrawID >= MAX_TEXT_DRAWS || !pTextDrawTransmit || !szText) return;
+
+    if (m_pTextDraw[wTextDrawID]) {
+        Delete(wTextDrawID);
+    }
+
+    CTextDraw* pTextDraw = new CTextDraw(pTextDrawTransmit, szText);
+    if (pTextDraw == nullptr) return;
+
+    m_pTextDraw[wTextDrawID] = pTextDraw;
+    m_bSlotState[wTextDrawID] = true;
+}
 // 0.3.7r1
 void CTextDrawPool::Delete(uint16_t wTextDrawID)
 {
