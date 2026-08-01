@@ -74,54 +74,62 @@ CTextDraw::~CTextDraw()
 
 uintptr_t LoadFromTxdSlot(const char* szSlot, const char* szTexture)
 {
-    RwTexture* tex;
+    if (!szSlot || !szTexture) return 0;
+
+    RwTexture* tex = nullptr;
+
     if (strncmp(szSlot, "none", 5u))
     {
-        /*uintptr_t v10 = ((int (*)(const char*))(g_libGTASA + 0x55BB85))(szSlot);
-        CallFunction<void>(g_libGTASA + 0x55BD6C + 1);
-        CallFunction<void>(g_libGTASA + 0x55BD6C + 1, v10, 0);
-        tex = CallFunction<RwTexture*>(g_libGTASA + 0x1B2558 + 1, szTexture, 0);
-        CallFunction<void>(g_libGTASA + 0x55BDA8 + 1);*/
+        // native lookup disabled in this build
     }
 
-    static char *texdb[8] = { "samp", "mobile", "txd", "menu", "gta3", "gta_int", "player", "playerhi" };
-    bool FindedLibrary = false;
+    static const char* texdb[8] = { "samp", "mobile", "txd", "menu", "gta3", "gta_int", "player", "playerhi" };
+    bool foundLibrary = false;
+
     for (int i = 0; i < 8; i++)
     {
         if (!strcmp(texdb[i], szSlot))
         {
-            FindedLibrary = true;
+            foundLibrary = true;
             break;
         }
     }
 
-    if (FindedLibrary == false)
+    if (!foundLibrary)
     {
-        if(!tex) tex = (RwTexture*)LoadTexture(szTexture);
+        tex = (RwTexture*)LoadTexture(szTexture);
     }
 
-    if(!tex) tex = (RwTexture*)LoadTexture(std::string(std::string(szTexture) + "_" + szSlot).c_str());
-    if(!tex) tex = (RwTexture*)LoadTexture(std::string(std::string(szSlot) + "_" + szTexture).c_str());
-    if(!tex) tex = (RwTexture*)LoadTexture(szTexture);
-    if(!tex)
+    if (!tex) tex = (RwTexture*)LoadTexture((std::string(szTexture) + "_" + szSlot).c_str());
+    if (!tex) tex = (RwTexture*)LoadTexture((std::string(szSlot) + "_" + szTexture).c_str());
+    if (!tex) tex = (RwTexture*)LoadTexture(szTexture);
+
+    if (!tex)
     {
         std::string str = szTexture;
         std::transform(str.begin(), str.end(), str.begin(), ::tolower);
         tex = (RwTexture*)LoadTexture(str.c_str());
     }
-    if(!tex)
+
+    if (!tex)
     {
         std::string str = szTexture;
         std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-        tex = (RwTexture*)LoadTexture(std::string(str + "_" + szSlot).c_str());
+        tex = (RwTexture*)LoadTexture((str + "_" + szSlot).c_str());
     }
 
-    if(!tex)
+    if (!tex)
     {
         tex = (RwTexture*)CUtil::LoadTextureFromDB(szSlot, szTexture);
     }
 
-   Log("%s loaded from %s", szTexture, szSlot);
+    if (!tex)
+    {
+        Log("Failed to load texture %s from %s", szTexture, szSlot);
+        return 0;
+    }
+
+    Log("%s loaded from %s", szTexture, szSlot);
     return (uintptr_t)tex;
 }
 
