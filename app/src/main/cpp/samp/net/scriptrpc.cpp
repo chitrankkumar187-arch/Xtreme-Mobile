@@ -1813,6 +1813,9 @@ void RegisterScriptRPCs(RakClientInterface *pRakClient)
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrShowTextDraw, ScrShowTextDraw);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrHideTextDraw, ScrHideTextDraw);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrTextDrawSetString, ScrTextDrawSetString);
+	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrShowPlayerTextDraw, ScrShowPlayerTextDraw);
+    pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrHidePlayerTextDraw, ScrHidePlayerTextDraw);
+    pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrPlayerTextDrawSetString, ScrPlayerTextDrawSetString);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrAddGangZone, ScrAddGangZone);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrRemoveGangZone, ScrGangZoneDestroy);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrFlashGangZone, ScrGangZoneFlash);
