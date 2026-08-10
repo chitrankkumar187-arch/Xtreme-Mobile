@@ -57,6 +57,7 @@ typedef unsigned short OBJECTID;
 #include "actorpool.h"
 #include "menupool.h"
 #include "playerbubblepool.h"
+#include "playertextdrawpool.h"
 
 class CNetGame
 {
