@@ -193,6 +193,11 @@ void CNetGame::UninitializePools()
 		m_pPools->pPlayerBubblePool = nullptr;
 	}
 
+	if (m_pPools->pPlayerTextDrawPool) {
+    delete m_pPools->pPlayerTextDrawPool;
+    m_pPools->pPlayerTextDrawPool = nullptr;
+	}
+
 	if (m_pPools) {
 		delete m_pPools;
 		m_pPools = nullptr;
@@ -201,10 +206,6 @@ void CNetGame::UninitializePools()
 	if (m_pNetSet) {
 		delete m_pNetSet;
 		m_pNetSet = nullptr;
-	}
-	if (m_pPools->pPlayerTextDrawPool) {
-    delete m_pPools->pPlayerTextDrawPool;
-    m_pPools->pPlayerTextDrawPool = nullptr;
 	}
 }
 
