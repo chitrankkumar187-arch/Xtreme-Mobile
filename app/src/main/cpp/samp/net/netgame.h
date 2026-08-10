@@ -121,6 +121,7 @@ public:
 	CGangZonePool* GetGangZonePool() { return m_pPools->pGangZonePool; }
 	CPickupPool* GetPickupPool() { return m_pPools->pPickupPool; }
 	CPlayerBubblePool* GetPlayerBubblePool() { return m_pPools->pPlayerBubblePool; }
+    CPlayerTextDrawPool* GetPlayerTextDrawPool() { return m_pPools->pPlayerTextDrawPool; }
 
 	void SendDialogResponse(uint16_t wDialogID, uint8_t byteButtonID, uint16_t wListBoxItem, const char* szInput);
 	void SendChatMessage(const char* szMsg);
@@ -190,6 +191,7 @@ private:
 		CMenuPool			*pMenuPool;
 		CPlayerBubblePool	*pPlayerBubblePool;
 		CObjectPool			*pObjectPool;
+        CPlayerTextDrawPool *pPlayerTextDrawPool;
 	} *m_pPools;
 
 	void Packet_UnoccupiedSync(Packet *pkt);
