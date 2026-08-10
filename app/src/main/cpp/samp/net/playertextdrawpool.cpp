@@ -22,36 +22,33 @@ CPlayerTextDrawPool::CPlayerTextDrawPool()
 CPlayerTextDrawPool::~CPlayerTextDrawPool()
 {
     for (int i = 0; i < MAX_PLAYER_TEXT_DRAWS; i++)
-    {
         Delete(i);
-    }
 }
 
-void CPlayerTextDrawPool::New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText)
+void CPlayerTextDrawPool::New(uint16_t id, TEXT_DRAW_TRANSMIT* data, const char* text)
 {
-    if (wTextDrawID >= MAX_PLAYER_TEXT_DRAWS || !pTextDrawTransmit || !szText) return;
+    if (id >= MAX_PLAYER_TEXT_DRAWS || !data || !text) return;
 
-    if (m_pTextDraw[wTextDrawID])
-        Delete(wTextDrawID);
+    if (m_pTextDraw[id]) Delete(id);
 
-    CTextDraw* pTextDraw = new CTextDraw(pTextDrawTransmit, szText);
-    if (!pTextDraw) return;
+    CTextDraw* td = new CTextDraw(data, text);
+    if (!td) return;
 
-    m_pTextDraw[wTextDrawID] = pTextDraw;
-    m_bSlotState[wTextDrawID] = true;
+    m_pTextDraw[id] = td;
+    m_bSlotState[id] = true;
 }
 
-void CPlayerTextDrawPool::Delete(uint16_t wTextDrawID)
+void CPlayerTextDrawPool::Delete(uint16_t id)
 {
-    if (wTextDrawID >= MAX_PLAYER_TEXT_DRAWS) return;
+    if (id >= MAX_PLAYER_TEXT_DRAWS) return;
 
-    if (m_pTextDraw[wTextDrawID])
+    if (m_pTextDraw[id])
     {
-        delete m_pTextDraw[wTextDrawID];
-        m_pTextDraw[wTextDrawID] = nullptr;
+        delete m_pTextDraw[id];
+        m_pTextDraw[id] = nullptr;
     }
 
-    m_bSlotState[wTextDrawID] = false;
+    m_bSlotState[id] = false;
 }
 
 void CPlayerTextDrawPool::Draw()
@@ -59,27 +56,18 @@ void CPlayerTextDrawPool::Draw()
     for (int i = 0; i < MAX_PLAYER_TEXT_DRAWS; i++)
     {
         if (m_bSlotState[i] && m_pTextDraw[i])
-        {
             m_pTextDraw[i]->Draw();
-        }
     }
 }
 
-void CPlayerTextDrawPool::SetText(uint16_t wTextDrawID, const char* szText)
+void CPlayerTextDrawPool::SetText(uint16_t id, const char* text)
 {
-    if (wTextDrawID >= MAX_PLAYER_TEXT_DRAWS || !szText) return;
-
-    CTextDraw* pTextDraw = GetAt(wTextDrawID);
-    if (pTextDraw) pTextDraw->SetText(szText);
+    if (id >= MAX_PLAYER_TEXT_DRAWS || !text) return;
+    if (auto* td = GetAt(id)) td->SetText(text);
 }
 
-void CPlayerTextDrawPool::SetSelectState(bool bState, uint32_t dwColor)
+void CPlayerTextDrawPool::SetSelectState(bool state, uint32_t color)
 {
-    m_bSelectState = bState;
-    m_dwHoverColor = dwColor;
-}
-
-void CPlayerTextDrawPool::SendClick()
-{
-    // placeholder for player-textdraw click RPC once the RPC name/id is wired
+    m_bSelectState = state;
+    m_dwHoverColor = color;
 }
