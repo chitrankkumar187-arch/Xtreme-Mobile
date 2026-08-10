@@ -72,6 +72,7 @@ CTextDraw::~CTextDraw()
     DestroyTextDrawTexture(m_TextDrawData.iTextureSlot);
 }
 
+// app/src/main/cpp/samp/game/textdraw.cpp
 uintptr_t LoadFromTxdSlot(const char* szSlot, const char* szTexture)
 {
     if (!szSlot || !szTexture) return 0;
@@ -96,9 +97,7 @@ uintptr_t LoadFromTxdSlot(const char* szSlot, const char* szTexture)
     }
 
     if (!foundLibrary)
-    {
         tex = (RwTexture*)LoadTexture(szTexture);
-    }
 
     if (!tex) tex = (RwTexture*)LoadTexture((std::string(szTexture) + "_" + szSlot).c_str());
     if (!tex) tex = (RwTexture*)LoadTexture((std::string(szSlot) + "_" + szTexture).c_str());
@@ -119,9 +118,7 @@ uintptr_t LoadFromTxdSlot(const char* szSlot, const char* szTexture)
     }
 
     if (!tex)
-    {
         tex = (RwTexture*)CUtil::LoadTextureFromDB(szSlot, szTexture);
-    }
 
     if (!tex)
     {
@@ -129,7 +126,6 @@ uintptr_t LoadFromTxdSlot(const char* szSlot, const char* szTexture)
         return 0;
     }
 
-    Log("%s loaded from %s", szTexture, szSlot);
     return (uintptr_t)tex;
 }
 
