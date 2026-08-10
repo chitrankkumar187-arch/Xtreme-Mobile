@@ -1,44 +1,31 @@
 #pragma once
+#include "../main.h"
+#include "../game/textdraw.h"
 
-#include <stdint.h>
-#include "game/textdraw.h"
-#include "netgame.h"
+#define MAX_PLAYER_TEXT_DRAWS 256
 
-#define MAX_TEXT_DRAW_LINE 800
-
-class CTextDrawPool
+class CPlayerTextDrawPool
 {
 public:
-    CTextDrawPool();
-    ~CTextDrawPool();
+    CPlayerTextDrawPool();
+    ~CPlayerTextDrawPool();
 
-    void New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText);
-    void Delete(uint16_t wTextDrawID);
+    void New(uint16_t id, TEXT_DRAW_TRANSMIT* data, const char* text);
+    void Delete(uint16_t id);
     void Draw();
-    void DrawImage();
+    void SetText(uint16_t id, const char* text);
+    void SetSelectState(bool state, uint32_t color = 0);
 
-    CTextDraw* GetAt(uint16_t wTextDrawID) {
-        if (wTextDrawID >= MAX_TEXT_DRAWS) return nullptr;
-        if (!m_bSlotState[wTextDrawID]) return nullptr;
-        return m_pTextDraw[wTextDrawID];
+    CTextDraw* GetAt(uint16_t id)
+    {
+        if (id >= MAX_PLAYER_TEXT_DRAWS) return nullptr;
+        if (!m_bSlotState[id]) return nullptr;
+        return m_pTextDraw[id];
     }
 
-    bool GetState() {
-        return m_bSelectState;
-    }
-
-    void SetSelectState(bool bState, uint32_t dwColor = 0);
-    bool onTouchEvent(int type, bool multi, int x, int y);
-
-    void SnapshotProcess();
-
 private:
-    void SendClick();
-
-private:
-    uint8_t m_bSlotState[MAX_TEXT_DRAWS];
-    CTextDraw* m_pTextDraw[MAX_TEXT_DRAWS];
-
+    CTextDraw* m_pTextDraw[MAX_PLAYER_TEXT_DRAWS];
+    bool m_bSlotState[MAX_PLAYER_TEXT_DRAWS];
     bool m_bSelectState;
     uint32_t m_dwHoverColor;
     uint16_t m_wClickedTextDrawID;
