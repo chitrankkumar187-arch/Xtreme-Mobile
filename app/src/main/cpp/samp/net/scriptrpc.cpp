@@ -700,17 +700,31 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
     uint16_t wTextLength = 0;
 
     if (!bsData.Read(wTextDrawID)) return;
-    if (wTextDrawID >= MAX_TEXT_DRAWS) return;
+    if (wTextDrawID < 2048)
+    {
+    	if (wTextDrawID >= MAX_TEXT_DRAWS) return;
+		
+        pTextDrawPool->New(
+            wTextDrawID,
+            &textDrawTransmit,
+            szText
+        );
+    }
+    else if (wTextDrawID >= 2048 && wTextDrawID <= 2303)
+    {
+        CPlayerTextDrawPool* pPlayerPool =
+            pNetGame->GetPlayerTextDrawPool();
 
-    if (!bsData.Read((char*)&textDrawTransmit, sizeof(TEXT_DRAW_TRANSMIT))) return;
-    if (!bsData.Read(wTextLength)) return;
-    if (wTextLength > MAX_TEXT_DRAW_LINE) return;
+        if (!pPlayerPool) return;
 
-    char szText[MAX_TEXT_DRAW_LINE + 1]{};
-    if (wTextLength > 0 && !bsData.Read(szText, wTextLength)) return;
-    szText[wTextLength] = '\0';
+        uint16_t playerTextDrawID = wTextDrawID - 2048;
 
-    pTextDrawPool->New(wTextDrawID, &textDrawTransmit, szText);
+        pPlayerPool->New(
+            playerTextDrawID,
+            &textDrawTransmit,
+            szText
+        );
+    }
 }
 
 void ScrHideTextDraw(RPCParameters* rpcParams)
