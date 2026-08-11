@@ -739,9 +739,21 @@ void ScrHideTextDraw(RPCParameters* rpcParams)
 
     uint16_t wTextDrawID = 0;
     if (!bsData.Read(wTextDrawID)) return;
-    if (wTextDrawID >= MAX_TEXT_DRAWS) return;
+    if (wTextDrawID < 2048)
+    {
+        if (wTextDrawID >= MAX_TEXT_DRAWS) return;
 
-    pTextDrawPool->Delete(wTextDrawID);
+        pTextDrawPool->Delete(wTextDrawID);
+    }
+    else if (wTextDrawID >= 2048 && wTextDrawID <= 2303)
+    {
+        CPlayerTextDrawPool* pPlayerPool =
+            pNetGame->GetPlayerTextDrawPool();
+
+        if (!pPlayerPool) return;
+
+        pPlayerPool->Delete(wTextDrawID - 2048);
+    }
 }
 
 void ScrTextDrawSetString(RPCParameters* rpcParams)
