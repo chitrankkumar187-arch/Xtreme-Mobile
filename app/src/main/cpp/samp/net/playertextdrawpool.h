@@ -25,11 +25,8 @@ public:
     }
 
 private:
-    void SendClick();
-
-private:
-    uint8_t m_bSlotState[MAX_PLAYER_TEXT_DRAWS];
     CTextDraw* m_pTextDraw[MAX_PLAYER_TEXT_DRAWS];
+    bool m_bSlotState[MAX_PLAYER_TEXT_DRAWS];
 
     bool m_bSelectState;
     uint32_t m_dwHoverColor;
