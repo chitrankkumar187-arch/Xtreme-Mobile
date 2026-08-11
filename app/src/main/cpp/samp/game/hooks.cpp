@@ -30,7 +30,7 @@
 #include "java/jniutil.h"
 #include "Widgets/TouchInterface.h"
 #include "game/BuildingRemoval.h"
-
+#include "../net/playertextdrawpool.h"
 #include "graphics/ES2VertexBuffer.h"
 #include "graphics/RQ_Commands.h"
 #include "graphics/RQShader.h"
@@ -146,9 +146,20 @@ void Render2dStuff_hook()
             pObjectPool->ProcessMaterialText();
         }
 
-        CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
-        if (pTextDrawPool && pTextDrawPool->GetState() == false) {
+        CTextDrawPool* pTextDrawPool =  
+		    pNetGame->GetTextDrawPool();
+
+        if (pTextDrawPool && pTextDrawPool->GetState() == false)
+        {
             pTextDrawPool->SnapshotProcess();
+        }
+
+        CPlayerTextDrawPool* pPlayerTextDrawPool =
+            pNetGame->GetPlayerTextDrawPool();
+
+        if (pPlayerTextDrawPool)
+        {
+            pPlayerTextDrawPool->Draw();
         }
     }
 

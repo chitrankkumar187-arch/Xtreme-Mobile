@@ -29,22 +29,26 @@ CTextDrawPool::~CTextDrawPool()
     }
 }
 // 0.3.7
+// app/src/main/cpp/samp/net/textdrawpool.cpp
 void CTextDrawPool::New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText)
 {
-    if (m_pTextDraw[wTextDrawID]) {
-        Delete(wTextDrawID);
-    }
+    if (wTextDrawID >= MAX_TEXT_DRAWS || !pTextDrawTransmit || !szText) return;
+
+    if (m_pTextDraw[wTextDrawID]) Delete(wTextDrawID);
 
     CTextDraw* pTextDraw = new CTextDraw(pTextDrawTransmit, szText);
-    if (pTextDraw == nullptr) return;
+    if (!pTextDraw) return;
 
     m_pTextDraw[wTextDrawID] = pTextDraw;
     m_bSlotState[wTextDrawID] = true;
 }
-// 0.3.7
+
 void CTextDrawPool::Delete(uint16_t wTextDrawID)
 {
-    if (m_pTextDraw[wTextDrawID]) {
+    if (wTextDrawID >= MAX_TEXT_DRAWS) return;
+
+    if (m_pTextDraw[wTextDrawID])
+    {
         delete m_pTextDraw[wTextDrawID];
         m_pTextDraw[wTextDrawID] = nullptr;
         m_bSlotState[wTextDrawID] = false;

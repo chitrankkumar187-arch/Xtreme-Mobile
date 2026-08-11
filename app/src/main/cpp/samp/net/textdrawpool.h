@@ -1,10 +1,7 @@
 #pragma once
+#include "../main.h"
+#include "../game/textdraw.h"
 
-#include <stdint.h>
-#include "game/textdraw.h"
-#include "netgame.h"
-
-#define MAX_TEXT_DRAW_LINE 800
 
 class CTextDrawPool
 {
