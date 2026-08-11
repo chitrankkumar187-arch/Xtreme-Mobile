@@ -137,7 +137,6 @@ void CNetGame::InitializePools()
     m_pPools->pActorPool = new CActorPool();
     m_pPools->pMenuPool = new CMenuPool();
     m_pPools->pPlayerBubblePool = new CPlayerBubblePool();
-	m_pPools->pPlayerTextDrawPool = new CPlayerTextDrawPool();
 }
 
 void CNetGame::UninitializePools()
@@ -191,11 +190,6 @@ void CNetGame::UninitializePools()
 	{
 		delete m_pPools->pPlayerBubblePool;
 		m_pPools->pPlayerBubblePool = nullptr;
-	}
-
-	if (m_pPools->pPlayerTextDrawPool) {
-    delete m_pPools->pPlayerTextDrawPool;
-    m_pPools->pPlayerTextDrawPool = nullptr;
 	}
 
 	if (m_pPools) {
