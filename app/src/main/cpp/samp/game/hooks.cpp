@@ -146,22 +146,19 @@ void Render2dStuff_hook()
             pObjectPool->ProcessMaterialText();
         }
 
-        CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
+        CTextDrawPool* pTextDrawPool =
+            pNetGame->GetTextDrawPool();
 
         if (pTextDrawPool && pTextDrawPool->GetState() == false)
         {
-            // Generate model-preview snapshots when needed.
             pTextDrawPool->SnapshotProcess();
-
-            // Actually render normal/global TextDraws.
-            pTextDrawPool->Draw();
         }
 
-        CPlayerTextDrawPool* pPlayerTextDrawPool = pNetGame->GetPlayerTextDrawPool();
+        CPlayerTextDrawPool* pPlayerTextDrawPool =
+            pNetGame->GetPlayerTextDrawPool();
 
         if (pPlayerTextDrawPool)
         {
-            // Render PlayerTextDraws.
             pPlayerTextDrawPool->Draw();
         }
     }
