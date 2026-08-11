@@ -154,10 +154,11 @@ void Render2dStuff_hook()
             pTextDrawPool->SnapshotProcess();
         }
 
-        CPlayerTextDrawPool* pPlayerTextDrawPool =
+        /*
+		CPlayerTextDrawPool* pPlayerTextDrawPool =
             pNetGame->GetPlayerTextDrawPool();
 		
-        /*
+        
         if (pPlayerTextDrawPool)
         {
             pPlayerTextDrawPool->Draw();
