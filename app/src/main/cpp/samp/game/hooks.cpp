@@ -152,6 +152,7 @@ void Render2dStuff_hook()
         if (pTextDrawPool && pTextDrawPool->GetState() == false)
         {
             pTextDrawPool->SnapshotProcess();
+			pTextDrawPool->Draw();
         }
 
         CPlayerTextDrawPool* pPlayerTextDrawPool =
