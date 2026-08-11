@@ -687,37 +687,90 @@ extern UI *pUI;
 // app/src/main/cpp/samp/net/scriptrpc.cpp
 void ScrShowTextDraw(RPCParameters* rpcParams)
 {
-    if (!rpcParams || !rpcParams->input || !pNetGame) return;
+    if (!rpcParams || !rpcParams->input || !pNetGame)
+        return;
 
-    CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
-    if (!pTextDrawPool) return;
+    unsigned char* Data =
+        reinterpret_cast<unsigned char*>(rpcParams->input);
 
-    RakNet::BitStream bsData((unsigned char*)rpcParams->input,
-                             (rpcParams->numberOfBitsOfData / 8) + 1, false);
+    int iBitLength = rpcParams->numberOfBitsOfData;
+
+    RakNet::BitStream bsData(
+        Data,
+        (iBitLength / 8) + 1,
+        false
+    );
 
     uint16_t wTextDrawID = 0;
     TEXT_DRAW_TRANSMIT textDrawTransmit{};
     uint16_t wTextLength = 0;
 
-    if (!bsData.Read(wTextDrawID)) return;
+    if (!bsData.Read(wTextDrawID))
+        return;
+
+    /*
+     * IMPORTANT:
+     * Read the complete TextDraw packet BEFORE creating
+     * the TextDraw object.
+     */
+    if (!bsData.Read(
+            (char*)&textDrawTransmit,
+            sizeof(TEXT_DRAW_TRANSMIT)))
+        return;
+
+    if (!bsData.Read(wTextLength))
+        return;
+
+    if (wTextLength > MAX_TEXT_DRAW_LINE)
+        return;
+
+    char szText[MAX_TEXT_DRAW_LINE + 1]{};
+
+    if (wTextLength > 0)
+    {
+        if (!bsData.Read(szText, wTextLength))
+            return;
+    }
+
+    szText[wTextLength] = '\0';
+
+    /*
+     * Global TextDraw IDs.
+     */
     if (wTextDrawID < 2048)
     {
-    	if (wTextDrawID >= MAX_TEXT_DRAWS) return;
-		
+        if (wTextDrawID >= MAX_TEXT_DRAWS)
+            return;
+
+        CTextDrawPool* pTextDrawPool =
+            pNetGame->GetTextDrawPool();
+
+        if (!pTextDrawPool)
+            return;
+
         pTextDrawPool->New(
             wTextDrawID,
             &textDrawTransmit,
             szText
         );
+
+        return;
     }
-    else if (wTextDrawID >= 2048 && wTextDrawID <= 2303)
+
+    /*
+     * PlayerTextDraw IDs.
+     */
+    if (wTextDrawID >= 2048 &&
+        wTextDrawID <= 2303)
     {
         CPlayerTextDrawPool* pPlayerPool =
             pNetGame->GetPlayerTextDrawPool();
 
-        if (!pPlayerPool) return;
+        if (!pPlayerPool)
+            return;
 
-        uint16_t playerTextDrawID = wTextDrawID - 2048;
+        uint16_t playerTextDrawID =
+            wTextDrawID - 2048;
 
         pPlayerPool->New(
             playerTextDrawID,
@@ -729,81 +782,122 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
 
 void ScrHideTextDraw(RPCParameters* rpcParams)
 {
-    if (!rpcParams || !rpcParams->input || !pNetGame) return;
+    if (!rpcParams || !rpcParams->input || !pNetGame)
+        return;
 
-    CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
-    if (!pTextDrawPool) return;
+    unsigned char* Data =
+        reinterpret_cast<unsigned char*>(rpcParams->input);
 
-    RakNet::BitStream bsData((unsigned char*)rpcParams->input,
-                             (rpcParams->numberOfBitsOfData / 8) + 1, false);
+    int iBitLength = rpcParams->numberOfBitsOfData;
+
+    RakNet::BitStream bsData(
+        Data,
+        (iBitLength / 8) + 1,
+        false
+    );
 
     uint16_t wTextDrawID = 0;
-    if (!bsData.Read(wTextDrawID)) return;
+
+    if (!bsData.Read(wTextDrawID))
+        return;
+
     if (wTextDrawID < 2048)
     {
-        if (wTextDrawID >= MAX_TEXT_DRAWS) return;
+        if (wTextDrawID >= MAX_TEXT_DRAWS)
+            return;
 
-        pTextDrawPool->Delete(wTextDrawID);
+        CTextDrawPool* pTextDrawPool =
+            pNetGame->GetTextDrawPool();
+
+        if (pTextDrawPool)
+            pTextDrawPool->Delete(wTextDrawID);
+
+        return;
     }
-    else if (wTextDrawID >= 2048 && wTextDrawID <= 2303)
+
+    if (wTextDrawID >= 2048 &&
+        wTextDrawID <= 2303)
     {
         CPlayerTextDrawPool* pPlayerPool =
             pNetGame->GetPlayerTextDrawPool();
 
-        if (!pPlayerPool) return;
-
-        pPlayerPool->Delete(wTextDrawID - 2048);
+        if (pPlayerPool)
+            pPlayerPool->Delete(wTextDrawID - 2048);
     }
 }
-
+void ScrTextDrawSetString(RPCParameters* rpcParams)
 void ScrTextDrawSetString(RPCParameters* rpcParams)
 {
-    if (!rpcParams || !rpcParams->input || !pNetGame) return;
+    if (!rpcParams || !rpcParams->input || !pNetGame)
+        return;
 
-    CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
-    if (!pTextDrawPool) return;
+    unsigned char* Data =
+        reinterpret_cast<unsigned char*>(rpcParams->input);
 
-    RakNet::BitStream bsData((unsigned char*)rpcParams->input,
-                             (rpcParams->numberOfBitsOfData / 8) + 1, false);
+    int iBitLength = rpcParams->numberOfBitsOfData;
+
+    RakNet::BitStream bsData(
+        Data,
+        (iBitLength / 8) + 1,
+        false
+    );
 
     uint16_t wTextDrawID = 0;
     uint16_t wTextLength = 0;
 
-	if (wTextDrawID < 2048)
-	{
-		if (wTextDrawID >= MAX_TEXT_DRAWS) return;
+    if (!bsData.Read(wTextDrawID))
+        return;
 
-    	CTextDraw* pTextDraw =
-        	pTextDrawPool->GetAt(wTextDrawID);
+    if (!bsData.Read(wTextLength))
+        return;
 
-   	    if (pTextDraw)
-        	pTextDraw->SetText(szText);
-	}
-	else if (wTextDrawID >= 2048 && wTextDrawID <= 2303)
-	{
-  	    CPlayerTextDrawPool* pPlayerPool =
-        	pNetGame->GetPlayerTextDrawPool();
-
-    	if (!pPlayerPool) return;
-
-    	pPlayerPool->SetText(
-        wTextDrawID - 2048,
-        szText
-    	);
-	}
-
-    if (!bsData.Read(wTextDrawID)) return;
-    if (wTextDrawID >= MAX_TEXT_DRAWS) return;
-
-    if (!bsData.Read(wTextLength)) return;
-    if (wTextLength > MAX_TEXT_DRAW_LINE) return;
+    if (wTextLength > MAX_TEXT_DRAW_LINE)
+        return;
 
     char szText[MAX_TEXT_DRAW_LINE + 1]{};
-    if (wTextLength > 0 && !bsData.Read(szText, wTextLength)) return;
+
+    if (wTextLength > 0)
+    {
+        if (!bsData.Read(szText, wTextLength))
+            return;
+    }
+
     szText[wTextLength] = '\0';
 
-    CTextDraw* pTextDraw = pTextDrawPool->GetAt(wTextDrawID);
-    if (pTextDraw) pTextDraw->SetText(szText);
+    if (wTextDrawID < 2048)
+    {
+        if (wTextDrawID >= MAX_TEXT_DRAWS)
+            return;
+
+        CTextDrawPool* pTextDrawPool =
+            pNetGame->GetTextDrawPool();
+
+        if (!pTextDrawPool)
+            return;
+
+        CTextDraw* pTextDraw =
+            pTextDrawPool->GetAt(wTextDrawID);
+
+        if (pTextDraw)
+            pTextDraw->SetText(szText);
+
+        return;
+    }
+
+    if (wTextDrawID >= 2048 &&
+        wTextDrawID <= 2303)
+    {
+        CPlayerTextDrawPool* pPlayerPool =
+            pNetGame->GetPlayerTextDrawPool();
+
+        if (!pPlayerPool)
+            return;
+
+        pPlayerPool->SetText(
+            wTextDrawID - 2048,
+            szText
+        );
+    }
 }
 void ScrSelectTextDraw(RPCParameters* rpcParams)
 {
