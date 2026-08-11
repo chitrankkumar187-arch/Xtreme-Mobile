@@ -769,6 +769,29 @@ void ScrTextDrawSetString(RPCParameters* rpcParams)
     uint16_t wTextDrawID = 0;
     uint16_t wTextLength = 0;
 
+	if (wTextDrawID < 2048)
+	{
+		if (wTextDrawID >= MAX_TEXT_DRAWS) return;
+
+    	CTextDraw* pTextDraw =
+        	pTextDrawPool->GetAt(wTextDrawID);
+
+   	    if (pTextDraw)
+        	pTextDraw->SetText(szText);
+	}
+	else if (wTextDrawID >= 2048 && wTextDrawID <= 2303)
+	{
+  	    CPlayerTextDrawPool* pPlayerPool =
+        	pNetGame->GetPlayerTextDrawPool();
+
+    	if (!pPlayerPool) return;
+
+    	pPlayerPool->SetText(
+        wTextDrawID - 2048,
+        szText
+    	);
+	}
+
     if (!bsData.Read(wTextDrawID)) return;
     if (wTextDrawID >= MAX_TEXT_DRAWS) return;
 
