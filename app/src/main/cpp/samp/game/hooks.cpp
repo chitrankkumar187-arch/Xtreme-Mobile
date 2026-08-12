@@ -149,11 +149,19 @@ void Render2dStuff_hook()
         CTextDrawPool* pTextDrawPool =
             pNetGame->GetTextDrawPool();
 
-        if (pTextDrawPool && pTextDrawPool->GetState() == false)
+        if (pTextDrawPool)
         {
-            pTextDrawPool->SnapshotProcess();
-			pTextDrawPool->Draw();
-        }
+            // Snapshot processing is only needed when TextDraw
+            // selection mode is not active.
+            if (!pTextDrawPool->GetState())
+            {
+                pTextDrawPool->SnapshotProcess();
+            }
+
+            // TextDraws must ALWAYS be rendered, including when
+            // SelectTextDraw() has enabled selection mode.
+    pTextDrawPool->Draw();
+}
 
         /*
 		CPlayerTextDrawPool* pPlayerTextDrawPool =
