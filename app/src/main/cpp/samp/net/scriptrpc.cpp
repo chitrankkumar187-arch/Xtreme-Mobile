@@ -831,6 +831,7 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
     // Read packet FIRST.
     if (!bsData.Read(wTextDrawID))
         return;
+	
 	Log("[TD] ID=%d", wTextDrawID);
 
     if (!bsData.Read(
@@ -850,15 +851,18 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
     {
         if (!bsData.Read(szText, wTextLength))
             return;
-		Log("[TD] text='%s' length=%d style=%d x=%f y=%f",
-            szText,
-            wTextLength,
-            textDrawTransmit.byteStyle,
-            textDrawTransmit.fX,
-            textDrawTransmit.fY);
-    }
 
-    szText[wTextLength] = '\0';
+	}
+
+	szText[wTextLength] = '\0';
+		
+	Log("[TD] text='%s' length=%d style=%d x=%f y=%f",
+        szText,
+        wTextLength,
+        textDrawTransmit.byteStyle,
+        textDrawTransmit.fX,
+        textDrawTransmit.fY);
+    
 
     // Global TextDraw: 0-2047
     if (wTextDrawID < 2048)
