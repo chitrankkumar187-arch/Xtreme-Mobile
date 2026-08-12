@@ -25,19 +25,41 @@ CPlayerTextDrawPool::~CPlayerTextDrawPool()
         Delete(i);
 }
 
-void CPlayerTextDrawPool::New(uint16_t id, TEXT_DRAW_TRANSMIT* data, const char* text)
+void CPlayerTextDrawPool::New(
+    uint16_t id,
+    TEXT_DRAW_TRANSMIT* data,
+    const char* text)
 {
-    if (id >= MAX_PLAYER_TEXT_DRAWS || !data || !text) return;
+    Log("[PTD] New id=%u text='%s' style=%u x=%f y=%f",
+        id,
+        text ? text : "",
+        data ? data->byteStyle : 0,
+        data ? data->fX : 0.0f,
+        data ? data->fY : 0.0f);
 
-    if (m_pTextDraw[id]) Delete(id);
+    if (id >= MAX_PLAYER_TEXT_DRAWS || !data || !text)
+    {
+        Log("[PTD] New rejected");
+        return;
+    }
 
-    CTextDraw* td = new CTextDraw(data, text);
-    if (!td) return;
+    if (m_pTextDraw[id])
+        Delete(id);
+
+    CTextDraw* td =
+        new CTextDraw(data, text);
+
+    if (!td)
+    {
+        Log("[PTD] new CTextDraw failed");
+        return;
+    }
 
     m_pTextDraw[id] = td;
     m_bSlotState[id] = true;
-}
 
+    Log("[PTD] New successful id=%u", id);
+}
 void CPlayerTextDrawPool::Delete(uint16_t id)
 {
     if (id >= MAX_PLAYER_TEXT_DRAWS) return;
@@ -53,10 +75,20 @@ void CPlayerTextDrawPool::Delete(uint16_t id)
 
 void CPlayerTextDrawPool::Draw()
 {
+    static bool logged = false;
+
+    if (!logged)
+    {
+        Log("[PTD] Draw() running");
+        logged = true;
+    }
+
     for (int i = 0; i < MAX_PLAYER_TEXT_DRAWS; i++)
     {
         if (m_bSlotState[i] && m_pTextDraw[i])
+        {
             m_pTextDraw[i]->Draw();
+        }
     }
 }
 
