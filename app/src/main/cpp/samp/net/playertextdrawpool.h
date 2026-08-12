@@ -14,6 +14,7 @@ public:
     void New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText);
     void Delete(uint16_t wTextDrawID);
     void Draw();
+    void SnapshotProcess();
     void SetSelectState(bool bState, uint32_t dwColor = 0);
     void SetText(uint16_t wTextDrawID, const char* szText);
 
