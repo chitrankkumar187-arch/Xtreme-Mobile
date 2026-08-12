@@ -77,12 +77,13 @@ void CTextDrawPool::Draw()
 
 void CTextDrawPool::DrawImage()
 {
+    /*
     for (int i = 0; i < MAX_TEXT_DRAWS; i++)
     {
         if (m_bSlotState[i]) {
             m_pTextDraw[i]->DrawImage();
         }
-    }
+    }*/
 }
 
 // ========
