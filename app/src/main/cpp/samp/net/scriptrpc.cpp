@@ -832,6 +832,9 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
     if (!bsData.Read(wTextDrawID))
         return;
 	
+	Log("[TD] ShowTextDraw RPC ID=%u bits=%d", 
+		wTextDrawID,
+		rpcParams->numberOfBitsOfData);
 	Log("[TD] ID=%d", wTextDrawID);
 
     if (!bsData.Read(
@@ -884,6 +887,29 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
 
         return;
     }
+
+	if (wTextDrawID >= 2048 && wTextDrawID <= 2303)
+    {
+		Log("[PTD] RECEIVED PlayerTextDraw ID=%u local=%u",
+			wTextDrawID,
+			wTextDrawID - 2048);
+		CPlayerTextDrawPool* pool =
+		pNetGame->GetPlayerTextDrawPool();
+		
+		if (!pool)
+        {
+			Log("[PTD] ERROR: player textdraw pool is null");
+			return;
+		}
+		
+		pool->New(
+			wTextDrawID - 2048,
+			&textDrawTransmit,
+			szText
+			);
+		
+		return;
+	}
 
     // PlayerTextDraw: 2048-2303
     if (wTextDrawID <= 2303)
