@@ -814,7 +814,8 @@ extern UI *pUI;
 // app/src/main/cpp/samp/net/scriptrpc.cpp
 void ScrShowTextDraw(RPCParameters* rpcParams)
 {
-    if (!rpcParams || !rpcParams->input || !pNetGame)
+    Log("[TD] ScrShowTextDraw called");
+	if (!rpcParams || !rpcParams->input || !pNetGame)
         return;
 
     RakNet::BitStream bsData(
@@ -830,6 +831,7 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
     // Read packet FIRST.
     if (!bsData.Read(wTextDrawID))
         return;
+	Log("[TD] ID=%d", wTextDrawID);
 
     if (!bsData.Read(
             reinterpret_cast<char*>(&textDrawTransmit),
@@ -848,6 +850,12 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
     {
         if (!bsData.Read(szText, wTextLength))
             return;
+		Log("[TD] text='%s' length=%d style=%d x=%f y=%f",
+            szText,
+            wTextLength,
+            textDrawTransmit.byteStyle,
+            textDrawTransmit.fX,
+            textDrawTransmit.fY);
     }
 
     szText[wTextLength] = '\0';
