@@ -28,7 +28,6 @@ public:
     void SetSelectState(bool bState, uint32_t dwColor = 0);
     bool onTouchEvent(int type, bool multi, int x, int y);
 
-    void SnapshotProcess();
 
 private:
     void SendClick();
