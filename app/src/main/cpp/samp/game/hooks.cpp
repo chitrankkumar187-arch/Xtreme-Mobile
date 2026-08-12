@@ -160,10 +160,10 @@ void Render2dStuff_hook()
 
             // TextDraws must ALWAYS be rendered, including when
             // SelectTextDraw() has enabled selection mode.
-    pTextDrawPool->Draw();
-}
+            pTextDrawPool->Draw();
+        }
 
-        /*
+        
 		CPlayerTextDrawPool* pPlayerTextDrawPool =
             pNetGame->GetPlayerTextDrawPool();
 		
@@ -172,7 +172,7 @@ void Render2dStuff_hook()
         {
             pPlayerTextDrawPool->Draw();
         }
-		*/
+		
     }
 
     if (pUI) pUI->render();
