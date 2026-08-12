@@ -34,7 +34,7 @@ void CFont::SetOrientation(uint8_t orientation)
 
 void CFont::SetWrapX(float wrapX)
 {
-	return ((void(*)(float))(g_libGTASA + 0x6CF0B0))(wrapX);
+    return ((void(*)(float))(g_libGTASA + 0x5D8108))(wrapX);
 }
 
 void CFont::SetCentreSize(float size)
