@@ -69,6 +69,14 @@ void CPickupPool::Process()
 void CPickupPool::New(PICKUP *pPickup, int iPickup)
 {
     if (!pPickup) return;
+    Log("[PICKUP] index=%d model=%d type=%d pos=%f,%f,%f",
+        iPickup,
+        pPickup->iModel,
+        pPickup->iType,
+        pPickup->fX,
+        pPickup->fY,
+        pPickup->fZ);
+    
     if (m_iPickupCount >= MAX_PICKUPS || iPickup < 0 || iPickup >= MAX_PICKUPS) return;
 
     if (m_dwHnd[iPickup] != 0 && m_dwHnd[iPickup] != 0xFFFFFFFF) {
