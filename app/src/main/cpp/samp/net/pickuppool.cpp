@@ -96,6 +96,13 @@ void CPickupPool::New(PICKUP *pPickup, int iPickup)
     m_droppedWeapon[iPickup].PlayerID = -1;
 
     int dwGTAId = -1;
+
+    if (pPickup->iModel >= 19500)
+    {
+        Log("[PICKUP] BLOCKING custom pickup model=%d", pPickup->iModel);
+        return;
+    }
+    
     uintptr_t hPickup = pGame->CreatePickup(pPickup->iModel, pPickup->iType,
                                             pPickup->fX, pPickup->fY, pPickup->fZ, &dwGTAId);
 
