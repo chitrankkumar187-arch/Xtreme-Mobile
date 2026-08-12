@@ -59,19 +59,13 @@ void CTextDrawPool::Delete(uint16_t wTextDrawID)
 // 0.3.7
 void CTextDrawPool::Draw()
 {
-    static bool once = false;
-
-    if (!once)
+    for (int i = 0; i < MAX_TEXT_DRAWS; i++)
     {
-        Log("[TD] Draw() entered");
-        once = true;
-    }
-
-    // TEST ONLY: draw only ID 0
-    if (m_bSlotState[0] && m_pTextDraw[0])
-    {
-        Log("[TD] Drawing ID 0");
-        m_pTextDraw[0]->Draw();
+        if (m_bSlotState[i] && m_pTextDraw[i])
+        {
+            Log("[TD] Drawing ID=%d", i);
+            m_pTextDraw[i]->Draw();
+        }
     }
 }
 
