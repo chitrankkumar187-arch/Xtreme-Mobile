@@ -106,6 +106,7 @@ void CPlayerTextDrawPool::SetSelectState(bool state, uint32_t color)
 
 void CPlayerTextDrawPool::SnapshotProcess()
 {
+    /*
     for (int i = 0; i < MAX_PLAYER_TEXT_DRAWS; i++)
     {
         if (!m_bSlotState[i] || !m_pTextDraw[i])
@@ -119,4 +120,5 @@ void CPlayerTextDrawPool::SnapshotProcess()
             continue;
         }
     }
+    */
 }
