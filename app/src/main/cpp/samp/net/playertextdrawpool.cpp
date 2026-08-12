@@ -113,10 +113,10 @@ void CPlayerTextDrawPool::SnapshotProcess()
 
         CTextDraw* pTextDraw = m_pTextDraw[i];
 
-        if (pTextDraw->m_TextDrawData.dwStyle == 5 &&
-            pTextDraw->m_TextDrawData.iTextureSlot == -1)
+        if (pTextDraw->m_TextDrawData.dwStyle == 5)
         {
-            pTextDraw->SnapshotProcess();
+            Log("[PTD] Skipping preview model ID=%d", i);
+            continue;
         }
     }
 }
