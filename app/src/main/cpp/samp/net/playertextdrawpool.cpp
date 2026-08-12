@@ -103,3 +103,20 @@ void CPlayerTextDrawPool::SetSelectState(bool state, uint32_t color)
     m_bSelectState = state;
     m_dwHoverColor = color;
 }
+
+void CPlayerTextDrawPool::SnapshotProcess()
+{
+    for (int i = 0; i < MAX_PLAYER_TEXT_DRAWS; i++)
+    {
+        if (!m_bSlotState[i] || !m_pTextDraw[i])
+            continue;
+
+        CTextDraw* pTextDraw = m_pTextDraw[i];
+
+        if (pTextDraw->m_TextDrawData.dwStyle == 5 &&
+            pTextDraw->m_TextDrawData.iTextureSlot == -1)
+        {
+            pTextDraw->SnapshotProcess();
+        }
+    }
+}
