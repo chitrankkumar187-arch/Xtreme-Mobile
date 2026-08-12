@@ -33,6 +33,7 @@ CTextDrawPool::~CTextDrawPool()
 void CTextDrawPool::New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText)
 {
     if (wTextDrawID >= MAX_TEXT_DRAWS || !pTextDrawTransmit || !szText) return;
+    Log("[TD] New ID=%d text='%s'", wTextDrawID, szText);
 
     if (m_pTextDraw[wTextDrawID]) Delete(wTextDrawID);
 
@@ -41,6 +42,7 @@ void CTextDrawPool::New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTrans
 
     m_pTextDraw[wTextDrawID] = pTextDraw;
     m_bSlotState[wTextDrawID] = true;
+    Log("[TD] New complete ID=%d", wTextDrawID);
 }
 
 void CTextDrawPool::Delete(uint16_t wTextDrawID)
@@ -57,22 +59,30 @@ void CTextDrawPool::Delete(uint16_t wTextDrawID)
 // 0.3.7
 void CTextDrawPool::Draw()
 {
-    for (int i = 0; i < MAX_TEXT_DRAWS; i++)
+    static bool once = false;
+
+    if (!once)
     {
-        if (m_bSlotState[i]) {
-            m_pTextDraw[i]->Draw();
-        }
+        Log("[TD] Draw() entered");
+        once = true;
+    }
+
+    // TEST ONLY: draw only ID 0
+    if (m_bSlotState[0] && m_pTextDraw[0])
+    {
+        Log("[TD] Drawing ID 0");
+        m_pTextDraw[0]->Draw();
     }
 }
 
 void CTextDrawPool::DrawImage()
 {
-    /*for (int i = 0; i < MAX_TEXT_DRAWS; i++)
+    for (int i = 0; i < MAX_TEXT_DRAWS; i++)
     {
         if (m_bSlotState[i]) {
             m_pTextDraw[i]->DrawImage();
         }
-    }*/
+    }
 }
 
 // ========
