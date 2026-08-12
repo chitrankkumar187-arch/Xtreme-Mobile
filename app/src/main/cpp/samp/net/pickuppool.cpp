@@ -76,6 +76,13 @@ void CPickupPool::New(PICKUP *pPickup, int iPickup)
         pPickup->fX,
         pPickup->fY,
         pPickup->fZ);
+
+    if (pPickup->iModel == 19524 ||
+        pPickup->iModel == 19134)
+    {
+        Log("[PICKUP] BLOCKING suspicious model %d", pPickup->iModel);
+        return;
+    }
     
     if (m_iPickupCount >= MAX_PICKUPS || iPickup < 0 || iPickup >= MAX_PICKUPS) return;
 
