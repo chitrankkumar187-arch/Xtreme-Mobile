@@ -456,11 +456,11 @@ RwTexture* CSnapShotHelper::CreateVehicleSnapShot(int iModel, uint32_t dwColor, 
     RwRenderStateSet(rwRENDERSTATEFOGENABLE, (void*)FALSE);
 
     DefinedState();
-    pVehicle->m_pVehicle->Add();
+    
     RenderEntity(pVehicle->m_pVehicle);
     RwCameraEndUpdate(m_camera);
     RpWorldRemoveLight(Scene.m_pRpWorld, m_light);
-    pVehicle->m_pVehicle->Remove();
+    
     delete pVehicle;
     CStreaming::RemoveModelIfNoRefs(iModel);
 
