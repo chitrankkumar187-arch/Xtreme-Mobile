@@ -379,8 +379,6 @@ RwTexture* CSnapShotHelper::CreateVehicleSnapShot(int iModel, uint32_t dwColor, 
         return nullptr;
     }
 
-    CVehicle* pVehicle = new CVehicle(iModel, 0.0f, 0.0f, 50.0f, 0.0f, false, false);
-    
     CVehicle* pVehicle = nullptr;
 
     try
