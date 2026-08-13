@@ -118,5 +118,10 @@ void CPlayerTextDrawPool::SnapshotProcess()
         {
             pTextDraw->SnapshotProcess();
         }
+        if (pTextDraw->m_TextDrawData.dwStyle == 5)
+        {
+            Log("[PTD] Preview style id=%d", i);
+            pTextDraw->SnapshotProcess();
+        }
     }
 }
