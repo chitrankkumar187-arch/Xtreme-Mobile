@@ -15,10 +15,8 @@ public:
 
     // 0.3.7
     CObject* GetAt(OBJECTID ObjectID) {
-        if (ObjectID <= MAX_OBJECTS && m_bObjectSlotState[ObjectID])
-            return m_pObjects[ObjectID];
-
-        return nullptr;
+        if (ObjectID < MAX_OBJECTS && m_bObjectSlotState[ObjectID])
+            return nullptr;
     }
 
     CObject *GetObjectFromGtaPtr(CEntityGTA *pGtaObject)
