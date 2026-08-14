@@ -535,12 +535,14 @@ void CVehicle::ApplyEngineState(int iState)
 
 void CVehicle::ApplyLightState(int iState)
 {
-	if (!m_pVehicle) return;
-	//if(iState > 1)
-	//	return;
+    if (!m_pVehicle)
+        return;
 
-	m_iLightState = iState;
-    m_pVehicle->m_nVehicleFlags.bLightsOn = iState;
+    if (iState < 0)
+        iState = 0;
+
+    m_iLightState = iState;
+    m_pVehicle->m_nVehicleFlags.bLightsOn = iState ? 1 : 0;
 }
 // 0.3.7
 void CVehicle::ProcessMarkers()
