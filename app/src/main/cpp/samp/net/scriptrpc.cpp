@@ -369,57 +369,8 @@ void ScrCreateObject(RPCParameters* rpcParams)
         }
         else if (byteType == 2)
         {
-            uint8_t byteMaterialIndex = 0;
-            uint8_t byteMaterialSize = 0;
-            uint8_t byteFontNameLength = 0;
-            uint8_t byteFontSize = 0;
-            uint8_t byteFontBold = 0;
-            uint32_t dwFontColor = 0;
-            uint32_t dwBackgroundColor = 0;
-            uint8_t byteAlign = 0;
-
-            char szFontName[32] = {};
-            char szText[2048] = {};
-
-            if (!bsData.Read(byteMaterialIndex)) return;
-            if (!bsData.Read(byteMaterialSize)) return;
-            if (!bsData.Read(byteFontNameLength)) return;
-
-            if (byteFontNameLength >= sizeof(szFontName))
-                return;
-
-            if (byteFontNameLength > 0 &&
-                !bsData.Read(szFontName, byteFontNameLength))
-                return;
-
-            szFontName[byteFontNameLength] = '\0';
-
-            if (!bsData.Read(byteFontSize)) return;
-            if (!bsData.Read(byteFontBold)) return;
-            if (!bsData.Read(dwFontColor)) return;
-            if (!bsData.Read(dwBackgroundColor)) return;
-            if (!bsData.Read(byteAlign)) return;
-
-            stringCompressor->DecodeString(
-                szText,
-                sizeof(szText),
-                &bsData
-            );
-
-            if (strlen(szFontName) < 32)
-            {
-                pObject->SetMaterialText(
-                    byteMaterialIndex,
-                    szText,
-                    byteMaterialSize,
-                    szFontName,
-                    byteFontSize,
-                    byteFontBold,
-                    dwFontColor,
-                    dwBackgroundColor,
-                    byteAlign
-                );
-            }
+            Log("[OBJECT] CreateObject material-text skipped id=%d",
+				ObjectID);
         }
     }
 
@@ -527,54 +478,8 @@ void ScrSetObjectMaterial(RPCParameters* rpcParams)
     }
     else if (byteMaterialType == 2)
     {
-        uint8_t byteMaterialIndex = 0;
-        uint8_t byteMaterialSize = 0;
-        uint8_t byteFontNameLength = 0;
-        uint8_t byteFontSize = 0;
-        uint8_t byteBold = 0;
-        uint32_t dwFontColor = 0;
-        uint32_t dwBackColor = 0;
-        uint8_t byteTextAlignment = 0;
-
-        char fontname[32] = {};
-        char text[2048] = {};
-
-        if (!bsData.Read(byteMaterialIndex)) return;
-        if (!bsData.Read(byteMaterialSize)) return;
-        if (!bsData.Read(byteFontNameLength)) return;
-
-        if (byteFontNameLength >= sizeof(fontname))
-            return;
-
-        if (byteFontNameLength > 0 &&
-            !bsData.Read(fontname, byteFontNameLength))
-            return;
-
-        fontname[byteFontNameLength] = '\0';
-
-        if (!bsData.Read(byteFontSize)) return;
-        if (!bsData.Read(byteBold)) return;
-        if (!bsData.Read(dwFontColor)) return;
-        if (!bsData.Read(dwBackColor)) return;
-        if (!bsData.Read(byteTextAlignment)) return;
-
-        stringCompressor->DecodeString(
-            text,
-            sizeof(text),
-            &bsData
-        );
-
-        pObject->SetMaterialText(
-            byteMaterialIndex,
-            text,
-            byteMaterialSize,
-            fontname,
-            byteFontSize,
-            byteBold,
-            dwFontColor,
-            dwBackColor,
-            byteTextAlignment
-        );
+        Log("[OBJECT] Material text temporarily skipped for object %d",
+			ObjectID);
     }
 }
 
