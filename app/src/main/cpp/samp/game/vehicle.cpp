@@ -523,11 +523,14 @@ bool CVehicle::HasADriver()
 
 void CVehicle::ApplyEngineState(int iState)
 {
-	if (!m_pVehicle) return;
+    if (!m_pVehicle)
+        return;
 
-	m_iEngineState = iState;
+    if (iState < 0)
+        iState = 0;
 
-    m_pVehicle->m_nVehicleFlags.bEngineOn = iState;
+    m_iEngineState = iState;
+    m_pVehicle->m_nVehicleFlags.bEngineOn = iState ? 1 : 0;
 }
 
 void CVehicle::ApplyLightState(int iState)
