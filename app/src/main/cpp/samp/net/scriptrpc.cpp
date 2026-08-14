@@ -287,8 +287,20 @@ void ScrCreateObject(RPCParameters* rpcParams)
 
     CObject* pObject = pObjectPool->GetAt(ObjectID);
 
+	Log("[OBJECT] Created id=%d model=%d pos=%f,%f,%f",
+    ObjectID,
+    iModel,
+    vecPos.x,
+    vecPos.y,
+    vecPos.z);
+
     if (!pObject)
-        return;
+	{
+		Log("[OBJECT] GetAt FAILED id=%d model=%d",
+			ObjectID,
+			iModel);
+		return;
+	}
 
     if (AttachedObjectID != INVALID_OBJECT_ID)
     {
