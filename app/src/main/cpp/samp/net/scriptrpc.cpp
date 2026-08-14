@@ -203,8 +203,13 @@ int iTotalObjects = 0;
 
 void ScrCreateObject(RPCParameters* rpcParams)
 {
+    Log("[OBJECT] ScrCreateObject CALLED");
+
     if (!rpcParams || !rpcParams->input || !pNetGame)
-        return;
+    {
+        Log("[OBJECT] invalid rpcParams/input/netgame");
+		return;
+	}
 
     unsigned char* Data =
         reinterpret_cast<unsigned char*>(rpcParams->input);
