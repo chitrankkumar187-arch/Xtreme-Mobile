@@ -143,7 +143,7 @@ void Render2dStuff_hook()
         CObjectPool* pObjectPool = pNetGame->GetObjectPool();
         if (pObjectPool) {
             pObjectPool->Process();
-            pObjectPool->ProcessMaterialText();
+           // pObjectPool->ProcessMaterialText();
         }
 
         CTextDrawPool* pTextDrawPool =
