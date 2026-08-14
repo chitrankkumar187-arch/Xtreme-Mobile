@@ -24,16 +24,58 @@ CObjectPool::~CObjectPool()
     }
 }
 
-bool CObjectPool::New(OBJECTID ObjectID, int iModel, CVector vecPos, CVector vecRot, float fDrawDistance)
+bool CObjectPool::New(
+    OBJECTID ObjectID,
+    int iModel,
+    CVector vecPos,
+    CVector vecRot,
+    float fDrawDistance)
 {
-    if (m_pObjects[ObjectID] != nullptr) {
+    Log("[OBJECTPOOL] New id=%d model=%d pos=%f,%f,%f",
+        ObjectID,
+        iModel,
+        vecPos.x,
+        vecPos.y,
+        vecPos.z);
+
+    if (ObjectID >= MAX_OBJECTS)
+    {
+        Log("[OBJECTPOOL] INVALID ID %d", ObjectID);
+        return false;
+    }
+
+    if (m_pObjects[ObjectID] != nullptr)
+    {
+        Log("[OBJECTPOOL] Deleting existing object id=%d", ObjectID);
         Delete(ObjectID);
     }
 
-    m_pObjects[ObjectID] = pGame->NewObject(iModel, vecPos, vecRot, fDrawDistance);
-    if (!m_pObjects[ObjectID]) return false;
+    Log("[OBJECTPOOL] Calling CGame::NewObject id=%d model=%d",
+        ObjectID,
+        iModel);
+
+    m_pObjects[ObjectID] =
+        pGame->NewObject(
+            iModel,
+            vecPos,
+            vecRot,
+            fDrawDistance
+        );
+
+    if (!m_pObjects[ObjectID])
+    {
+        Log("[OBJECTPOOL] pGame->NewObject FAILED id=%d model=%d",
+            ObjectID,
+            iModel);
+        return false;
+    }
 
     m_bObjectSlotState[ObjectID] = true;
+
+    Log("[OBJECTPOOL] SUCCESS id=%d model=%d",
+        ObjectID,
+        iModel);
+
     return true;
 }
 
