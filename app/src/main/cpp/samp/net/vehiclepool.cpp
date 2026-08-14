@@ -218,10 +218,21 @@ void CVehiclePool::Process()
                             byteSentUndrivenSync++;
                         }*/
 
-                        if (pNetGame->m_pNetSet->bManualVehicleEngineAndLight) {
-                            pVehicle->ApplyEngineState(pVehicle->GetEngineState());
-                            pVehicle->ApplyLightState(pVehicle->GetLightState());
-                        } else {
+                        if (pNetGame->m_pNetSet->bManualVehicleEngineAndLight)
+						{
+							int engineState = pVehicle->GetEngineState();
+							int lightState = pVehicle->GetLightState();
+
+							// -1 means the server has not sent the state yet.
+							// Keep both OFF until an explicit state arrives.
+    
+							pVehicle->ApplyEngineState(
+								engineState == -1 ? 0 : engineState
+								);
+							pVehicle->ApplyLightState(
+								lightState == -1 ? 0 : lightState
+								);
+						} else {
                             if (pVehicle->GetEngineState() == -1)
                             {
 								pVehicle->ApplyEngineState(0);
