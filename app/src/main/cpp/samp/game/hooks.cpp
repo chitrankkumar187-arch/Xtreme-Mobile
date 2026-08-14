@@ -170,11 +170,6 @@ void Render2dStuff_hook()
         
         if (pPlayerTextDrawPool)
         {
-			if (!pPlayerTextDrawPool->GetState())
-			{
-				pPlayerTextDrawPool->SnapshotProcess();
-			}
-
 			pPlayerTextDrawPool->Draw();
         }
 		
