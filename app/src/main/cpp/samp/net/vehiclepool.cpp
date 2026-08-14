@@ -223,15 +223,13 @@ void CVehiclePool::Process()
                             pVehicle->ApplyLightState(pVehicle->GetLightState());
                         } else {
                             if (pVehicle->GetEngineState() == -1)
-							{
-                                // Keep vehicles OFF until the server explicitly
-                                // sends an engine-on state.
-                                pVehicle->ApplyEngineState(0);
-                            }
-                            else
                             {
-                                pVehicle->ApplyEngineState(pVehicle->GetEngineState());
-                            }
+								pVehicle->ApplyEngineState(0);
+							}
+							else
+							{
+								pVehicle->ApplyEngineState(pVehicle->GetEngineState());
+							}
                         }
 
                         if (pVehicle->m_pVehicle != m_pGTAVehicles[VehicleID])
