@@ -28,8 +28,14 @@ CObject::CObject(
     m_AttachedVehicleID = INVALID_VEHICLE_ID;
     m_AttachedObjectID = INVALID_OBJECT_ID;
 
-    m_vecAttachedPos = {0.0f, 0.0f, 0.0f};
-    m_vecAttachedRot = {0.0f, 0.0f, 0.0f};
+    m_vecAttachedPos.x = 0.0f;
+    m_vecAttachedPos.y = 0.0f;
+	m_vecAttachedPos.z = 0.0f;
+	
+	m_vecAttachedRot.x = 0.0f;
+	m_vecAttachedRot.y = 0.0f;
+	m_vecAttachedRot.z = 0.0f;
+	
     m_bSyncRotation = false;
     m_bAttachedToPed = false;
 
@@ -37,9 +43,16 @@ CObject::CObject(
     m_fMoveSpeed = 0.0f;
     m_bNeedRotate = false;
 
+	memset(&m_matTarget, 0, sizeof(m_matTarget));
+
     m_matTarget = {};
-    m_vecRotationTarget = {0.0f, 0.0f, 0.0f};
-    m_vecSubRotationTarget = {0.0f, 0.0f, 0.0f};
+    m_vecRotationTarget.x = 0.0f;
+	m_vecRotationTarget.y = 0.0f;
+	m_vecRotationTarget.z = 0.0f;
+	
+	m_vecSubRotationTarget.x = 0.0f;
+	m_vecSubRotationTarget.y = 0.0f;
+	m_vecSubRotationTarget.z = 0.0f;
     m_fDistanceToTargetPoint = 0.0f;
     m_dwMoveTick = 0;
 
