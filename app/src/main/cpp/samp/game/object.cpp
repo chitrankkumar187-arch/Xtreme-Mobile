@@ -82,6 +82,8 @@ CObject::CObject(
         return;
     }
 
+	Log("[OBJECT] Creating GTA model=%d", iModel);
+
     // Create the actual GTA object.
     ScriptCommand(
         &create_object,
@@ -136,6 +138,10 @@ CObject::CObject(
         vecPos.x,
         vecPos.y,
         vecPos.z
+
+	Log("[OBJECT] create_object returned gtaId=%u model=%d",
+		m_dwGTAId,
+		iModel);
     );
 }
 
