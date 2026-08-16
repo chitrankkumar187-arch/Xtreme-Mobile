@@ -5,12 +5,21 @@
 #include "RW/RenderWare.h"
 #include "Streaming.h"
 #include "game/Models/ModelInfo.h"
+#include "util.h"
 
 #include <cmath>
 
 extern CGame* pGame;
 extern CNetGame* pNetGame;
 extern MaterialTextGenerator* pMaterialTextGenerator;
+
+static bool IsSampCustomObjectModel(int modelid)
+{
+    return
+        (modelid >= 11682 && modelid <= 12799) ||
+        (modelid >= 15065 && modelid <= 15999) ||
+        (modelid >= 18631 && modelid <= 19999);
+}
 
 CObject::CObject(
     int iModel,
@@ -115,8 +124,150 @@ CObject::CObject(
         vecPos.y,
         vecPos.z
 		);
+	if (IsSampCustomObjectModel(iModel))
+    {
+        Log(
+			"[OBJECT] Using CUSTOM RW path model=%d pos=%f,%f,%f",
+            iModel,
+            vecPos.x,
+            vecPos.y,
+            vecPos.z
+        );
+
+        m_bCustomRender = true;
+        m_pCustomRwObject = nullptr;
+
+        m_vecCustomPosition = vecPos;
+        m_vecCustomRotation = vecRot;
+        m_fCustomDrawDistance = fDrawDistance;
+
+        if (!CModelInfo::GetModelInfo(iModel))
+        {
+            Log("[OBJECT] Custom ModelInfo missing model=%d", iModel);
+            return;
+        }
+
+        CStreaming::TryLoadModel(iModel);
+
+        int timeout = 100;
+
+        while (!CStreaming::IsModelLoaded(iModel) && timeout > 0)
+        {
+            CStreaming::LoadAllRequestedModels(false);
+            usleep(10000);
+            timeout--;
+        }
+
+        if (!CStreaming::IsModelLoaded(iModel))
+        {
+            Log("[OBJECT] Custom model failed to load model=%d", iModel);
+            return;
+        }
+
+        Log("[OBJECT] Custom model loaded model=%d", iModel);
+
+        m_pCustomRwObject =
+            ModelInfoCreateInstance(iModel);
+
+        if (!m_pCustomRwObject)
+        {
+            Log(
+                "[OBJECT] ModelInfoCreateInstance FAILED model=%d",
+                iModel
+            );
+
+            return;
+        }
+
+        RwFrame* frame =
+            reinterpret_cast<RwFrame*>(m_pCustomRwObject->parent);
+
+        if (!frame)
+        {
+            Log(
+                "[OBJECT] Custom object has no parent frame model=%d",
+                iModel
+            );
+
+            DestroyAtomicOrClump(
+                reinterpret_cast<uintptr_t>(m_pCustomRwObject)
+            );
+
+            m_pCustomRwObject = nullptr;
+            return;
+        }
+
+        // Position
+        RwV3d pos;
+        pos.x = vecPos.x;
+		pos.y = vecPos.y;
+        pos.z = vecPos.z;
+
+        RwFrameTranslate(
+            frame,
+            &pos,
+            rwCOMBINEPRECONCAT
+        );
+
+        // Rotation X
+        CVector axis;
+        axis.x = 1.0f;
+        axis.y = 0.0f;
+        axis.z = 0.0f;
+
+        if (vecRot.x != 0.0f)
+        {
+            RwFrameRotate(
+                frame,
+                &axis,
+                vecRot.x,
+                rwCOMBINEPRECONCAT
+            );
+        }
+
+        // Rotation Y
+        axis.x = 0.0f;
+        axis.y = 1.0f;
+        axis.z = 0.0f;
+
+        if (vecRot.y != 0.0f)
+        {
+            RwFrameRotate(
+                frame,
+                &axis,
+                vecRot.y,
+                rwCOMBINEPRECONCAT
+            );
+        }
+
+        // Rotation Z
+        axis.x = 0.0f;
+        axis.y = 0.0f;
+        axis.z = 1.0f;
+
+        if (vecRot.z != 0.0f)
+        {
+            RwFrameRotate(
+                frame,
+                &axis,
+                vecRot.z,
+                rwCOMBINEPRECONCAT
+            );
+        }
+
+        RwFrameUpdateObjects(frame);
+
+        Log(
+            "[OBJECT] Custom RW object ready model=%d",
+            iModel
+        );
+
+        // IMPORTANT:
+        // Don't call native create_object for custom SA-MP models.
+        return;
+    }
 	
-    // Create the actual GTA object.
+	// Create the actual GTA object.
     ScriptCommand(
         &create_object,
         iModel,
