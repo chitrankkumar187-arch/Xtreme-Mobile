@@ -164,6 +164,7 @@ CObject::CObject(
         vecPos.x,
         vecPos.y,
         vecPos.z
+	);
 
 	Log("[OBJECT] create_object returned gtaId=%u model=%d",
 		m_dwGTAId,
