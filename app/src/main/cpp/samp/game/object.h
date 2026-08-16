@@ -34,6 +34,7 @@ public:
 	void AttachToObject(CObject* pObject);
 
 	void ProcessMaterialText();
+    void RenderCustom();
 
 	bool AttachedToMovingEntity();
 
@@ -84,5 +85,10 @@ private:
 	CVector		m_vecSubRotationTarget;
 	float		m_fDistanceToTargetPoint;
 	uint32_t	m_dwMoveTick;
+    RwObject* m_pCustomRwObject;
+    bool m_bCustomRender;
+    CVector m_vecCustomPosition;
+    CVector m_vecCustomRotation;
+    float m_fCustomDrawDistance;
 
 };
