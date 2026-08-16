@@ -140,12 +140,18 @@ void Render2dStuff_hook()
 
     if (pNetGame && pGame && !pGame->IsGamePaused())
     {
-        CObjectPool* pObjectPool = pNetGame->GetObjectPool();
-        if (pObjectPool) {
-            pObjectPool->Process();
-           // pObjectPool->ProcessMaterialText();
-        }
+        CObjectPool* pObjectPool =
+            pNetGame->GetObjectPool();
 
+        if (pObjectPool)
+        {
+            pObjectPool->Process();
+
+            pObjectPool->RenderCustomObjects();
+
+            // Keep this disabled for now.
+            // pObjectPool->ProcessMaterialText();
+        }
         CTextDrawPool* pTextDrawPool =
             pNetGame->GetTextDrawPool();
 
