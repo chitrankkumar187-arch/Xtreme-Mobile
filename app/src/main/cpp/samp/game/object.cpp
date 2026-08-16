@@ -12,14 +12,157 @@ extern CGame* pGame;
 extern CNetGame* pNetGame;
 extern MaterialTextGenerator* pMaterialTextGenerator;
 
-CObject::CObject(int iModel, CVector vecPos, CVector vecRot, float fDrawDistance, uint8_t bAttached)
+CObject::CObject(
+    int iModel,
+    CVector vecPos,
+    CVector vecRot,
+    float fDrawDistance,
+    uint8_t bAttached)
 {
+    m_pEntity = nullptr;
+    m_dwGTAId = 0xFFFFFFFF;
 
+    m_iModel = iModel;
+    m_vecRotation = vecRot;
+
+    m_AttachedVehicleID = INVALID_VEHICLE_ID;
+    m_AttachedObjectID = INVALID_OBJECT_ID;
+
+    m_vecAttachedPos = {0.0f, 0.0f, 0.0f};
+    m_vecAttachedRot = {0.0f, 0.0f, 0.0f};
+    m_bSyncRotation = false;
+    m_bAttachedToPed = false;
+
+    m_byteMoving = 0;
+    m_fMoveSpeed = 0.0f;
+    m_bNeedRotate = false;
+
+    m_matTarget = {};
+    m_vecRotationTarget = {0.0f, 0.0f, 0.0f};
+    m_vecSubRotationTarget = {0.0f, 0.0f, 0.0f};
+    m_fDistanceToTargetPoint = 0.0f;
+    m_dwMoveTick = 0;
+
+    m_MaterialTextIndex = -1;
+    m_bHasMaterial = false;
+    m_bHasMaterialText = false;
+    m_bForceRender = false;
+
+    for (int i = 0; i < 16; i++)
+    {
+        m_MaterialTexture[i] = 0;
+        m_dwMaterialColor[i] = 0;
+        m_MaterialTextTexture[i] = 0;
+        m_iMaterialType[i] = 0;
+
+        m_szMaterialText[i] = nullptr;
+        m_iMaterialSize[i] = 0;
+        m_iMaterialFontSize[i] = 0;
+        m_dwMaterialFontColor[i] = 0;
+        m_dwMaterialBackColor[i] = 0;
+        m_iMaterialTextAlign[i] = 0;
+    }
+
+    if (iModel <= 0 || iModel >= 20000)
+    {
+        Log("[OBJECT] Invalid model %d", iModel);
+        return;
+    }
+
+    // Create the actual GTA object.
+    ScriptCommand(
+        &create_object,
+        iModel,
+        vecPos.x,
+        vecPos.y,
+        vecPos.z,
+        &m_dwGTAId
+    );
+
+    if (m_dwGTAId == 0xFFFFFFFF)
+    {
+        Log("[OBJECT] create_object failed model=%d", iModel);
+        return;
+    }
+
+    m_pEntity = GamePool_Object_GetAt(m_dwGTAId);
+
+    if (!m_pEntity)
+    {
+        Log(
+            "[OBJECT] GamePool_Object_GetAt failed gtaId=%u model=%d",
+            m_dwGTAId,
+            iModel
+        );
+
+        ScriptCommand(&destroy_object, m_dwGTAId);
+        m_dwGTAId = 0xFFFFFFFF;
+        return;
+    }
+
+    ScriptCommand(
+        &put_object_at,
+        m_dwGTAId,
+        vecPos.x,
+        vecPos.y,
+        vecPos.z
+    );
+
+    ScriptCommand(
+        &set_object_rotation,
+        m_dwGTAId,
+        vecRot.x,
+        vecRot.y,
+        vecRot.z
+    );
+
+    Log(
+        "[OBJECT] GTA object created gtaId=%u model=%d pos=%f,%f,%f",
+        m_dwGTAId,
+        iModel,
+        vecPos.x,
+        vecPos.y,
+        vecPos.z
+    );
 }
+
 CObject::~CObject()
 {
+    for (int i = 0; i < 16; i++)
+    {
+        if (m_MaterialTexture[i])
+        {
+            RwTextureDestroy(
+                reinterpret_cast<RwTexture*>(m_MaterialTexture[i])
+            );
+            m_MaterialTexture[i] = 0;
+        }
 
+        if (m_MaterialTextTexture[i])
+        {
+            RwTextureDestroy(
+                reinterpret_cast<RwTexture*>(m_MaterialTextTexture[i])
+            );
+            m_MaterialTextTexture[i] = 0;
+        }
+
+        if (m_szMaterialText[i])
+        {
+            delete[] m_szMaterialText[i];
+            m_szMaterialText[i] = nullptr;
+        }
+    }
+
+    if (m_dwGTAId != 0xFFFFFFFF &&
+        GamePool_Object_GetAt(m_dwGTAId))
+    {
+        ScriptCommand(&destroy_object, m_dwGTAId);
+    }
+
+    m_pEntity = nullptr;
+    m_dwGTAId = 0xFFFFFFFF;
 }
+
 void CObject::Process(float fElapsedTime)
 {/*
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
