@@ -116,6 +116,20 @@ void CObjectPool::Process()
     s_dwLastTick = dwThisTick;
 }
 
+void CObjectPool::RenderCustomObjects()
+{
+    for (OBJECTID i = 0; i < MAX_OBJECTS; i++)
+    {
+        if (!m_bObjectSlotState[i])
+            continue;
+
+        if (!m_pObjects[i])
+            continue;
+
+        m_pObjects[i]->RenderCustom();
+    }
+}
+
 CObject* CObjectPool::FindObjectFromGtaPtr(CPhysical* pGtaObject)
 {
     for (OBJECTID ObjectID = 0; ObjectID < MAX_OBJECTS; ObjectID++)
