@@ -39,6 +39,7 @@ public:
     CObject* FindObjectFromGtaPtr(CPhysical* pGtaObject);
 
     void ProcessMaterialText();
+    void RenderCustomObjects();
     int GetCount() { return m_iObjectCount; }
 
 private:
