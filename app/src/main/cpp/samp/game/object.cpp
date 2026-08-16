@@ -82,6 +82,32 @@ CObject::CObject(
         return;
     }
 
+	if (!CModelInfo::GetModelInfo(iModel))
+	{
+		Log("[OBJECT] ModelInfo missing model=%d", iModel);
+		return;
+	}
+	
+	CStreaming::TryLoadModel(iModel);
+	
+	int timeout = 100;
+	
+	while (!CStreaming::IsModelLoaded(iModel) && timeout > 0)
+	{
+		CStreaming::LoadAllRequestedModels(false);
+		usleep(10000);
+		timeout--;
+	}
+	
+	if (!CStreaming::IsModelLoaded(iModel))
+	{
+		Log("[OBJECT] Model failed to load model=%d", iModel);
+		CStreaming::RemoveModelIfNoRefs(iModel);
+		return;
+	}
+	
+	Log("[OBJECT] Model loaded model=%d", iModel);
+
 	Log("[OBJECT] Creating GTA model=%d", iModel);
 
     // Create the actual GTA object.
