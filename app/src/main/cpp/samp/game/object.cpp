@@ -37,6 +37,19 @@ CObject::CObject(
     m_AttachedVehicleID = INVALID_VEHICLE_ID;
     m_AttachedObjectID = INVALID_OBJECT_ID;
 
+	m_pCustomRwObject = nullptr;
+    m_bCustomRender = false;
+
+    m_vecCustomPosition.x = 0.0f;
+    m_vecCustomPosition.y = 0.0f;
+    m_vecCustomPosition.z = 0.0f;
+
+    m_vecCustomRotation.x = 0.0f;
+    m_vecCustomRotation.y = 0.0f;
+    m_vecCustomRotation.z = 0.0f;
+
+    m_fCustomDrawDistance = 0.0f;
+
     m_vecAttachedPos.x = 0.0f;
     m_vecAttachedPos.y = 0.0f;
 	m_vecAttachedPos.z = 0.0f;
@@ -334,9 +347,25 @@ CObject::~CObject()
 {
     for (int i = 0; i < 16; i++)
     {
-        if (m_MaterialTexture[i])
+        if (m_pCustomRwObject)
         {
-            RwTextureDestroy(
+          Log(
+               "[OBJECT] Destroy custom RW object model=%d",
+                m_iModel
+            );
+
+            DestroyAtomicOrClump(
+                reinterpret_cast<uintptr_t>(m_pCustomRwObject)
+            );
+
+            m_pCustomRwObject = nullptr;
+
+            CStreaming::RemoveModelIfNoRefs(m_iModel);
+        }        
+		
+		if (m_MaterialTexture[i])
+                {
+                    RwTextureDestroy(
                 reinterpret_cast<RwTexture*>(m_MaterialTexture[i])
             );
             m_MaterialTexture[i] = 0;
@@ -817,4 +846,70 @@ void CObject::SetPos(float x, float y, float z)
     {
         ScriptCommand(&put_object_at, m_dwGTAId, x, y, z);
     }
+}
+
+void CObject::RenderCustom()
+{
+    if (!m_bCustomRender)
+        return;
+
+    if (!m_pCustomRwObject)
+        return;
+
+    if (!pGame)
+        return;
+
+    CPlayerPed* pLocalPed =
+        pGame->FindPlayerPed();
+
+    if (!pLocalPed || !pLocalPed->m_pPed)
+        return;
+
+    float distance =
+        pLocalPed->m_pPed->GetDistanceFromPoint(
+            m_vecCustomPosition.x,
+            m_vecCustomPosition.y,
+            m_vecCustomPosition.z
+        );
+
+    float drawDistance = m_fCustomDrawDistance;
+
+    if (drawDistance <= 0.0f)
+    {
+        CBaseModelInfo* modelInfo =
+            CModelInfo::GetModelInfo(m_iModel);
+
+        if (modelInfo)
+            drawDistance = modelInfo->m_fDrawDistance;
+    }
+
+    if (drawDistance <= 0.0f)
+        drawDistance = 300.0f;
+
+    if (distance > drawDistance)
+        return;
+
+    RwFrame* frame =
+        reinterpret_cast<RwFrame*>(m_pCustomRwObject->parent);
+
+    if (!frame)
+        return;
+
+    DefinedState();
+
+    // Apply standard object materials when available.
+    if (m_bHasMaterial || m_bHasMaterialText)
+    {
+        RwFrameForAllObjects(
+            frame,
+            reinterpret_cast<RwObject *(*)(RwObject*, void*)>(
+                ObjectMaterialCallBack
+            ),
+            this
+        );
+    }
+
+    RenderClumpOrAtomic(
+        reinterpret_cast<uintptr_t>(m_pCustomRwObject)
+    );
 }
