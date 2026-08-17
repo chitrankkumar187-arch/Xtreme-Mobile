@@ -170,6 +170,31 @@ void CBuildingRemoval::ProcessRemoveBuilding(uint32_t modelId, const CVector& po
     RemoveBuildingsInPool(GetObjectPoolGta(), modelId, pos, radius);
 }
 
+void CBuildingRemoval::ProcessAll()
+{
+    static uint32_t lastProcess = 0;
+
+    uint32_t now = GetTickCount();
+
+    // Don't scan all GTA pools every frame.
+    if (lastProcess != 0 && (now - lastProcess) < 500)
+        return;
+
+    lastProcess = now;
+
+    for (int i = 0; i < m_TotalRemovedObjects; i++)
+    {
+        const RemoveBuildingInfo& info =
+            m_RemoveBuildings[i];
+
+        ProcessRemoveBuilding(
+            info.modelId,
+            info.position,
+            info.radius
+        );
+    }
+}
+
 // Template implementation for pool processing
 template <typename PoolT>
 void CBuildingRemoval::RemoveBuildingsInPool(
