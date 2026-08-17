@@ -17,6 +17,7 @@ public:
 
 public:
     static void AddRemoval(uint32_t modelId, const CVector& pos, float radius);
+    static void ProcessAll();
     static void ProcessRemoveBuilding(uint32_t modelId, const CVector& pos, float radius);
     static void RemoveOccluders(const CVector& position, float radius);
 
