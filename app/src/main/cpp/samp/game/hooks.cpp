@@ -256,7 +256,8 @@ VALIDATE_SIZE(stLoadObjectInstance, (VER_x32 ? 0x28 : 0x28));
 CEntityGTA* (*CFileLoader__LoadObjectInstance)(CFileObjectInstance *pObject, const char *pName);
 CEntityGTA* CFileLoader__LoadObjectInstance_hook(CFileObjectInstance *pObject, const char *pName)
 {
-    // Check if this building should be removed
+    Log("[REMOVE] LoadObjectInstance hook called");
+	// Check if this building should be removed
     for (int i = 0; i < CBuildingRemoval::m_TotalRemovedObjects; i++)
     {
         const auto& buildingInfo = CBuildingRemoval::m_RemoveBuildings[i];
@@ -271,7 +272,15 @@ CEntityGTA* CFileLoader__LoadObjectInstance_hook(CFileObjectInstance *pObject, c
 
             float distance = CBuildingRemoval::GetDistanceBetween3DPoints(&pos, &buildingInfo.position);
             if (distance <= buildingInfo.radius) {
-                // Replace with invisible model (19300 is commonly used as invisible model)
+                Log(
+                    "[REMOVE] BLOCKING model=%d pos=%f,%f,%f",
+                        pObject->m_nModelId,
+                        pObject->m_vecPosition.x,
+                        pObject->m_vecPosition.y,
+                        pObject->m_vecPosition.z
+                    );
+				
+				// Replace with invisible model (19300 is commonly used as invisible model)
                 pObject->m_nModelId = 19300;
                 break;
             }
