@@ -516,6 +516,25 @@ void ScrRemoveBuilding(RPCParameters *rpcParams)
 	bsData.Read(fZ);
 	bsData.Read(fRadius);
 	RemoveBuilding(iModel, CVector(fX, fY, fZ), fRadius);
+
+	bsData.Read(iModel);
+    bsData.Read(fX);
+    bsData.Read(fY);
+    bsData.Read(fZ);
+    bsData.Read(fRadius);
+
+    Log("[REMOVE] RPC model=%d pos=%f,%f,%f radius=%f",
+        iModel,
+        fX,
+        fY,
+        fZ,
+        fRadius);
+
+    RemoveBuilding(
+        iModel,
+        CVector(fX, fY, fZ),
+        fRadius
+    );
 }
 // 0.3.7
 void ScrSetPlayerSkin(RPCParameters* rpcParams)
