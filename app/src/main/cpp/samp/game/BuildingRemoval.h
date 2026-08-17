@@ -16,6 +16,7 @@ public:
     static inline int m_TotalRemovedObjects = 0;
 
 public:
+    static void AddRemoval(uint32_t modelId, const CVector& pos, float radius);
     static void ProcessRemoveBuilding(uint32_t modelId, const CVector& pos, float radius);
     static void RemoveOccluders(const CVector& position, float radius);
 
