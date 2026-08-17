@@ -503,35 +503,51 @@ void ScrSetObjectMaterial(RPCParameters* rpcParams)
 // 0.3.7
 void ScrRemoveBuilding(RPCParameters *rpcParams)
 {
-	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
-	int iBitLength = rpcParams->numberOfBitsOfData;
+    if (!rpcParams || !rpcParams->input)
+        return;
 
-	int iModel;
-	float fX, fY, fZ;
-	float fRadius;
-	RakNet::BitStream bsData(Data, (iBitLength / 8) + 1, false);
-	bsData.Read(iModel);
-	bsData.Read(fX);
-	bsData.Read(fY);
-	bsData.Read(fZ);
-	bsData.Read(fRadius);
-	RemoveBuilding(iModel, CVector(fX, fY, fZ), fRadius);
+    unsigned char* Data =
+        reinterpret_cast<unsigned char*>(rpcParams->input);
 
-	bsData.Read(iModel);
-    bsData.Read(fX);
-    bsData.Read(fY);
-    bsData.Read(fZ);
-    bsData.Read(fRadius);
+    int iBitLength =
+        rpcParams->numberOfBitsOfData;
 
-    Log("[REMOVE] RPC model=%d pos=%f,%f,%f radius=%f",
+    int iModel;
+    float fX, fY, fZ;
+    float fRadius;
+
+    RakNet::BitStream bsData(
+        Data,
+        (iBitLength / 8) + 1,
+        false
+    );
+
+    if (!bsData.Read(iModel))
+        return;
+
+    if (!bsData.Read(fX))
+        return;
+
+    if (!bsData.Read(fY))
+        return;
+
+    if (!bsData.Read(fZ))
+        return;
+
+    if (!bsData.Read(fRadius))
+        return;
+
+    Log(
+        "[REMOVE] RPC model=%d pos=%f,%f,%f radius=%f",
         iModel,
         fX,
         fY,
         fZ,
-        fRadius);
+        fRadius
+    );
 
     RemoveBuilding(
-        iModel,
+        static_cast<uint32_t>(iModel),
         CVector(fX, fY, fZ),
         fRadius
     );
