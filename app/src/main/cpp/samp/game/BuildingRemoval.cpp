@@ -81,6 +81,74 @@ void CBuildingRemoval::RemoveOccluders(const CVector& position, float radius) {
     }
 }
 
+void CBuildingRemoval::AddRemoval(
+    uint32_t modelId,
+    const CVector& pos,
+    float radius)
+{
+    if (radius <= 0.0f)
+        return;
+
+    // Prevent duplicate removal entries.
+    for (int i = 0; i < m_TotalRemovedObjects; i++)
+    {
+        const RemoveBuildingInfo& existing = m_RemoveBuildings[i];
+
+        if (existing.modelId != modelId)
+            continue;
+
+        if (std::fabs(existing.position.x - pos.x) > 0.01f)
+            continue;
+
+        if (std::fabs(existing.position.y - pos.y) > 0.01f)
+            continue;
+
+        if (std::fabs(existing.position.z - pos.z) > 0.01f)
+            continue;
+
+        if (std::fabs(existing.radius - radius) > 0.01f)
+            continue;
+
+        // Already registered.
+        return;
+    }
+
+    if (m_TotalRemovedObjects >= MAX_REMOVALS)
+    {
+        Log(
+            "[REMOVE] Removal list full, model=%u pos=%f,%f,%f radius=%f",
+            modelId,
+            pos.x,
+            pos.y,
+            pos.z,
+            radius
+        );
+        return;
+    }
+
+    RemoveBuildingInfo& info =
+        m_RemoveBuildings[m_TotalRemovedObjects];
+
+    info.modelId = modelId;
+    info.position = pos;
+    info.radius = radius;
+
+    m_TotalRemovedObjects++;
+
+    Log(
+        "[REMOVE] Added model=%u pos=%f,%f,%f radius=%f total=%d",
+        modelId,
+        pos.x,
+        pos.y,
+        pos.z,
+        radius,
+        m_TotalRemovedObjects
+    );
+
+    // Remove a building that is already loaded.
+    ProcessRemoveBuilding(modelId, pos, radius);
+}
+
 void CBuildingRemoval::ProcessRemoveBuilding(uint32_t modelId, const CVector& pos, float radius) {
     // Remove occluders with larger radius for safety
     RemoveOccluders(pos, 500.0f);
