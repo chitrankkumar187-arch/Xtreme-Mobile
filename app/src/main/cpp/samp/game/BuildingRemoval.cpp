@@ -161,21 +161,66 @@ void CBuildingRemoval::ProcessRemoveBuilding(uint32_t modelId, const CVector& po
 
 // Template implementation for pool processing
 template <typename PoolT>
-void CBuildingRemoval::RemoveBuildingsInPool(PoolT* pool, uint32_t uiModel, const CVector& pos, float radius) {
-    if (!pool) return;
+void CBuildingRemoval::RemoveBuildingsInPool(
+    PoolT* pool,
+    uint32_t uiModel,
+    const CVector& pos,
+    float radius)
+{
+    if (!pool)
+    {
+        Log("[REMOVE] Pool is NULL model=%u", uiModel);
+        return;
+    }
 
-    for (int i = 0; i < pool->GetSize(); i++) {
+    int checked = 0;
+    int matched = 0;
+
+    for (int i = 0; i < pool->GetSize(); i++)
+    {
         auto* entity = pool->GetAt(i);
-        if (!IsEntityValidForRemoval(entity)) continue;
 
-        // Check model match (or -1 for all models)
-        if (entity->m_nModelIndex == uiModel || uiModel == static_cast<uint32_t>(-1)) {
-            float distance = GetDistanceBetween3DPoints(&pos, &entity->GetPosition());
-            if (distance <= radius) {
-                RemoveBuildingByPtr(entity);
-            }
+        if (!entity)
+            continue;
+
+        checked++;
+
+        if (!IsEntityValidForRemoval(entity))
+            continue;
+
+        if (entity->m_nModelIndex != uiModel &&
+            uiModel != static_cast<uint32_t>(-1))
+        {
+            continue;
+        }
+
+        float distance =
+            GetDistanceBetween3DPoints(
+                &pos,
+                &entity->GetPosition()
+            );
+
+        if (distance <= radius)
+        {
+            matched++;
+
+            Log(
+                "[REMOVE] MATCH model=%d distance=%f radius=%f",
+                entity->m_nModelIndex,
+                distance,
+                radius
+            );
+
+            RemoveBuildingByPtr(entity);
         }
     }
+
+    Log(
+        "[REMOVE] Pool scan requestedModel=%u checked=%d matched=%d",
+        uiModel,
+        checked,
+        matched
+    );
 }
 
 // Explicit template instantiations
