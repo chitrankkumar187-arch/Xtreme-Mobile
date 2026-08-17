@@ -254,38 +254,69 @@ typedef struct {
 VALIDATE_SIZE(stLoadObjectInstance, (VER_x32 ? 0x28 : 0x28));
 
 CEntityGTA* (*CFileLoader__LoadObjectInstance)(CFileObjectInstance *pObject, const char *pName);
-CEntityGTA* CFileLoader__LoadObjectInstance_hook(CFileObjectInstance *pObject, const char *pName)
+CEntityGTA* CFileLoader__LoadObjectInstance_hook(
+    CFileObjectInstance* pObject,
+    const char* pName)
 {
-    Log("[REMOVE] LoadObjectInstance hook called");
-	// Check if this building should be removed
-    for (int i = 0; i < CBuildingRemoval::m_TotalRemovedObjects; i++)
+    if (!pObject)
     {
-        const auto& buildingInfo = CBuildingRemoval::m_RemoveBuildings[i];
-        // Check model ID match (or -1 for all models)
-        if (pObject->m_nModelId == buildingInfo.modelId || buildingInfo.modelId == static_cast<uint32_t>(-1))
+        Log("[REMOVE] LoadObjectInstance: NULL object");
+        return CFileLoader__LoadObjectInstance(pObject, pName);
+    }
+
+    Log(
+        "[REMOVE] LoadObjectInstance model=%d pos=%f,%f,%f",
+        pObject->m_nModelId,
+        pObject->m_vecPosition.x,
+        pObject->m_vecPosition.y,
+        pObject->m_vecPosition.z
+    );
+
+    for (int i = 0;
+         i < CBuildingRemoval::m_TotalRemovedObjects;
+         i++)
+    {
+        const auto& buildingInfo =
+            CBuildingRemoval::m_RemoveBuildings[i];
+
+        if (pObject->m_nModelId != buildingInfo.modelId &&
+            buildingInfo.modelId != static_cast<uint32_t>(-1))
         {
-            CVector pos;
+            continue;
+        }
 
-            pos.x = pObject->m_vecPosition.x;
-            pos.y = pObject->m_vecPosition.y;
-            pos.z = pObject->m_vecPosition.z;
+        CVector pos;
+        pos.x = pObject->m_vecPosition.x;
+        pos.y = pObject->m_vecPosition.y;
+        pos.z = pObject->m_vecPosition.z;
 
-            float distance = CBuildingRemoval::GetDistanceBetween3DPoints(&pos, &buildingInfo.position);
-            if (distance <= buildingInfo.radius) {
-                Log(
-                    "[REMOVE] BLOCKING model=%d pos=%f,%f,%f",
-                        pObject->m_nModelId,
-                        pObject->m_vecPosition.x,
-                        pObject->m_vecPosition.y,
-                        pObject->m_vecPosition.z
-                    );
-				
-				// Replace with invisible model (19300 is commonly used as invisible model)
-                pObject->m_nModelId = 19300;
-                break;
-            }
+        float distance =
+            CBuildingRemoval::GetDistanceBetween3DPoints(
+                &pos,
+                &buildingInfo.position
+            );
+
+        if (distance <= buildingInfo.radius)
+        {
+            Log(
+                "[REMOVE] BLOCKING model=%d distance=%f radius=%f",
+                pObject->m_nModelId,
+                distance,
+                buildingInfo.radius
+            );
+
+            // Hide the original GTA building.
+            pObject->m_nModelId = 19300;
+            break;
         }
     }
+
+    if (!CFileLoader__LoadObjectInstance)
+    {
+        Log("[REMOVE] Original LoadObjectInstance is NULL!");
+        return nullptr;
+    }
+
     return CFileLoader__LoadObjectInstance(pObject, pName);
 }
 
@@ -2182,7 +2213,7 @@ void InstallHooks()
     CHook::InlineHook("_ZN7CWeapon18ProcessLineOfSightERK7CVectorS2_R9CColPointRP7CEntity11eWeaponTypeS6_bbbbbbb", &CWeapon__ProcessLineOfSight_hook, &CWeapon__ProcessLineOfSight);
     CHook::InlineHook("_ZN11CBulletInfo9AddBulletEP7CEntity11eWeaponType7CVectorS3_", &CBulletInfo_AddBullet_hook, &CBulletInfo_AddBullet);
 
-    // CHook::InlineHook("_ZN11CFileLoader18LoadObjectInstanceEP19CFileObjectInstancePKc", &CFileLoader__LoadObjectInstance_hook, &CFileLoader__LoadObjectInstance);
+    CHook::InlineHook("_ZN11CFileLoader18LoadObjectInstanceEP19CFileObjectInstancePKc", &CFileLoader__LoadObjectInstance_hook, &CFileLoader__LoadObjectInstance);
 
     CHook::InlineHook("_ZN6CRadar9ClearBlipEi", &CRadar_ClearBlip_hook, &CRadar_ClearBlip);
 
