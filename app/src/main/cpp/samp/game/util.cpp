@@ -4,6 +4,7 @@
 #include <cmath>
 #include "../net/netgame.h"
 #include "World.h"
+#include "BuildingRemoval.h"
 
 extern CNetGame* pNetGame;
 extern CGame* pGame;
@@ -2138,30 +2139,25 @@ std::list<REMOVE_BUILDING_DATA> RemoveBuildingData;
 
 void RemoveBuilding(uint32_t dwModel, RwV3d vecPos, float fRange)
 {
-    //UNUSED
-    /*if(dwModel == 19300) return; // We cant delete technical models!
+    CVector pos;
+    pos.x = vecPos.x;
+    pos.y = vecPos.y;
+    pos.z = vecPos.z;
 
-    if(iBuildingToRemoveCount >= 1000)
-        return;
+    Log(
+        "[REMOVE] RemoveBuilding request model=%u pos=%f,%f,%f radius=%f",
+        dwModel,
+        pos.x,
+        pos.y,
+        pos.z,
+        fRange
+    );
 
-    RemoveObjectInRange(dwModel, vecPos, fRange);
-
-    BuildingToRemove[iBuildingToRemoveCount].dwModel = dwModel;
-    BuildingToRemove[iBuildingToRemoveCount].vecPos.x = vecPos.x;
-    BuildingToRemove[iBuildingToRemoveCount].vecPos.y = vecPos.y;
-    BuildingToRemove[iBuildingToRemoveCount].vecPos.z = vecPos.z;
-    BuildingToRemove[iBuildingToRemoveCount].fRange = fRange;
-    iBuildingToRemoveCount++;*/
-    /*
-    REMOVE_BUILDING_DATA entry;
-    entry.usModelIndex = dwModel;
-    entry.fRange = fRange;
-    entry.vecPos = vecPos;
-
-    iBuildingToRemoveCount++;
-
-    RemoveBuildingData.push_back(entry);
-     */
+    CBuildingRemoval::AddRemoval(
+        dwModel,
+        pos,
+        fRange
+    );
 }
 
 #include "Pools.h"
