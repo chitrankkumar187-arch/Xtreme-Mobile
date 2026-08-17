@@ -37,6 +37,8 @@
 #include "Mobile/MobileMenu/MobileMenu.h"
 #include "Mobile/MobileSettings/MobileSettings.h"
 ///skip for now later if above is already converted
+#include "BuildingRemoval.h"
+
 extern UI* pUI;
 extern CGame* pGame;
 extern CNetGame *pNetGame;
@@ -152,6 +154,8 @@ void Render2dStuff_hook()
             // Keep this disabled for now.
             // pObjectPool->ProcessMaterialText();
         }
+		CBuildingRemoval::ProcessAll();
+		
         CTextDrawPool* pTextDrawPool =
             pNetGame->GetTextDrawPool();
 
