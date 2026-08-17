@@ -7,22 +7,33 @@
 #include "util/CUtil.h"
 #include <cmath>
 
-void CBuildingRemoval::RemoveBuildingByPtr(CEntityGTA* pEntity) {
-    if (!pEntity) return;
+void CBuildingRemoval::RemoveBuildingByPtr(CEntityGTA* pEntity)
+{
+    if (!pEntity)
+        return;
 
-    // Move entity underground
+    Log(
+        "[REMOVE] REMOVING entity model=%d pos=%f,%f,%f",
+        pEntity->m_nModelIndex,
+        pEntity->GetPosition().x,
+        pEntity->GetPosition().y,
+        pEntity->GetPosition().z
+    );
+
     CVector newPos = pEntity->GetPosition();
     newPos.z -= 2000.0f;
+
     pEntity->SetPosn(newPos);
 
-    // Set removal flags
     pEntity->m_bRemoveFromWorld = true;
     pEntity->m_nAreaCode = AREA_CODE_1;
     pEntity->m_bUsesCollision = false;
 
-    // Handle matrix position
-    if (pEntity->m_matrix) {
-        CVector& matrixPos = pEntity->m_matrix->GetPosition();
+    if (pEntity->m_matrix)
+    {
+        CVector& matrixPos =
+            pEntity->m_matrix->GetPosition();
+
         matrixPos.z -= 2000.0f;
     }
 }
